@@ -274,7 +274,7 @@ def compare_activities_multiple_methods(activities_list, methods, identifier, ou
         )
         
         # Create a variable name using the method name tuple and identifier
-        method_name = '_'.join(method.name).replace(' ', '_').lower()
+        method_name = method.name[2].replace(' ', '_').lower()
         var_name = f"{identifier}_{method_name}"
 
         #add two columns method and method unit to the df
@@ -508,7 +508,7 @@ def lvl21_plot_stacked_absolute(dataframes_dict, title_key=None):
     :param dataframes_dict: dictionary resulting from the function "compare_activities_multiple_methods" (and subsequently "small_inputs_to_other_column")
     :param title_key: some string for the plot titles
     '''
-    
+
     # Step 1: Collect all unique categories
     all_categories = set()
    
