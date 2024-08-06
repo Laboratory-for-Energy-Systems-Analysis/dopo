@@ -225,9 +225,9 @@ class MethodFinder:
         # Store the method object and additional information in the dictionary
         self.all_methods[key] = {
             'object': method_object,
-            'method name': method_object.name,
-            'short name' : method_object.name[2],
-            'unit': method_object.metadata.get('unit', 'Unknown')
+            'method name': str(method_object.name),
+            'short name' : str(method_object.name[2]),
+            'unit': str(method_object.metadata.get('unit', 'Unknown'))
         }
        
         # Return both the method object and its key
@@ -235,6 +235,64 @@ class MethodFinder:
 
     def get_all_methods(self):
         return self.all_methods
+
+# Setting up the methods for outlier detection
+# ---------------------------------------------------------------------
+
+def find_and_create_method(criteria, exclude=None):
+    """
+    Find a method based on given criteria and create a Brightway Method object. This will choose the first method.
+    Thus, filter criteria need to be defined precisely to pick the right method.
+    
+    :param criteria: List of strings that should be in the method name
+    :param exclude: List of strings that should not be in the method name (optional)
+    :return: Brightway Method object
+    """
+    methods = bw.methods
+
+    # Start with all methods
+    filtered_methods = methods
+
+    # Apply inclusion criteria
+    for criterion in criteria:
+        filtered_methods = [m for m in filtered_methods if criterion in str(m)]
+
+    # Apply exclusion criteria if provided
+    if exclude:
+        for exclusion in exclude:
+            filtered_methods = [m for m in filtered_methods if exclusion not in str(m)]
+
+    # Check if we found exactly one method
+    if len(filtered_methods) == 0:
+        raise ValueError("No methods found matching the given criteria.")
+    elif len(filtered_methods) > 1:
+        raise ValueError(f"Multiple methods found: {filtered_methods}. Please provide more specific criteria.")
+
+    # Get the first (and only) method
+    selected_method = filtered_methods[0]
+
+    # Create and return the Brightway Method object storing it in a defined variable outside of the funciton.
+    return bw.Method(selected_method)
+
+#NOTE: Would a yaml filter make it easier? OR Could have predefined methods?"""
+
+# Function for creating method dictionaries which holds method name and unit for later tracking of methods. 
+# ---------------------------------------------------------------------------------------------------------
+
+def create_method_dict(selected_methods_list):
+    '''
+    :selected_methods_list: a list of variables which contain the selected methods 
+    
+    '''
+    method_dict = {}
+    for method in selected_methods_list:
+        method_dict[method] = {
+            'short name': str(method.name[2]),
+            'method name': str(method.name),
+            'method unit': str(method.metadata['unit'])
+        }
+    
+    return method_dict
 
 # ------------------------------------------------------------------------------------------------------------------------------
 # CALCULATIONS
@@ -256,21 +314,21 @@ def compare_activities_multiple_methods(activities_list, methods, identifier, ou
     """
     dataframes_dict = {}
    
-    for method in methods:
+    for method_key, method_details in methods.items():
         result = ba.comparisons.compare_activities_by_grouped_leaves(
             activities_list,
-            method.name,
+            method_details['object'].name,
             output_format=output_format,
             mode=mode
         )
-        
+
         # Create a variable name using the method name tuple and identifier
-        method_name = method.name[2].replace(' ', '_').lower()
+        method_name = method_details['object'].name[2].replace(' ', '_').lower()
         var_name = f"{identifier}_{method_name}"
 
         #add two columns method and method unit to the df
-        result['method'] = str(method.name[2])
-        result['method unit'] = str(method.metadata['unit'])
+        result['method'] = str(method_details['object'].name[2])
+        result['method unit'] = str(method_details['object'].metadata['unit'])
         
         #order the columns after column unit
         cols = list(result.columns)
