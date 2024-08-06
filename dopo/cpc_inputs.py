@@ -17,7 +17,7 @@ import ast
 # Level 2.3 plot dependency
 # ------------------------------------------------------------------------------------------------------------------------------------
 
-def get_cpc_inputs_of_activities(activities_list, input_type='list'):
+def _get_cpc_inputs_of_activities(activities_list, input_type='list'):
 
     '''
     for param description see function lvl23_plot_input_comparison_plot_no_method
@@ -26,7 +26,7 @@ def get_cpc_inputs_of_activities(activities_list, input_type='list'):
     
     '''
 
-    def activity_list_inputs_cpc(activities_list, input_type):
+    def _activity_list_inputs_cpc(activities_list, input_type):
         all_inputs = []
         
         if input_type == 'list':
@@ -59,7 +59,7 @@ def get_cpc_inputs_of_activities(activities_list, input_type='list'):
         
         return combined_inputs
 
-    def update_cpc_information(combined_inputs):
+    def _update_cpc_information(combined_inputs):
         for index, row in combined_inputs.iterrows():
             # Transform each key to tuple
             tuple_key = ast.literal_eval(index)
@@ -75,7 +75,7 @@ def get_cpc_inputs_of_activities(activities_list, input_type='list'):
         
         return combined_inputs
 
-    def transform_dataframe(combined_inputs):
+    def _transform_dataframe(combined_inputs):
         # Set 'identifier' as the new index and drop the 'full_key' index
         combined_inputs = combined_inputs.reset_index().set_index('identifier').drop('full_key', axis=1)
         
@@ -103,8 +103,8 @@ def get_cpc_inputs_of_activities(activities_list, input_type='list'):
         return result
 
     # Execute the workflow
-    combined_inputs = activity_list_inputs_cpc(activities_list, input_type)
-    combined_inputs_with_cpc = update_cpc_information(combined_inputs)
-    final_result = transform_dataframe(combined_inputs_with_cpc)
+    combined_inputs = _activity_list_inputs_cpc(activities_list, input_type)
+    combined_inputs_with_cpc = _update_cpc_information(combined_inputs)
+    final_result = _transform_dataframe(combined_inputs_with_cpc)
 
     return final_result

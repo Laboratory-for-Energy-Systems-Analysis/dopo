@@ -23,7 +23,7 @@ import ast
 # Level 3 plot dependency 
 # -------------------------------------------------------------------------------------------------------------------------------
 
-def calculate_lca_ecoinvent_scores(database, method):
+def _calculate_lca_ecoinvent_scores(database, method):
 
     ecoinvent_scores= {}
     ecoinvent_scores['method']=method #save the method used for plotting the data
@@ -42,7 +42,7 @@ def calculate_lca_ecoinvent_scores(database, method):
 
     return ecoinvent_scores
 
-def calculate_lca_premise_scores(premise_database, method):
+def _calculate_lca_premise_scores(premise_database, method):
 
     premise_scores= {}
 
@@ -66,13 +66,13 @@ def calculate_lca_premise_scores(premise_database, method):
 
 # relative_changes contains the activity names as keys and their relative changes as values
 
-def compute_relative_change(original, transformed):
+def _compute_relative_change(original, transformed):
     if original == 0:
         return float('inf') if transformed != 0 else 0
     return (transformed - original) / original
 
 
-def calc_relative_changes(ecoinvent_scores, premise_scores):
+def _calc_relative_changes(ecoinvent_scores, premise_scores):
 
     # Match activities_list and calculate relative changes
     relative_changes = {}
@@ -88,7 +88,7 @@ def calc_relative_changes(ecoinvent_scores, premise_scores):
                 continue
             
             transformed_score = premise_scores[key]
-            relative_change = compute_relative_change(original_score, transformed_score)
+            relative_change = _compute_relative_change(original_score, transformed_score)
             relative_changes[key] = relative_change
 
     # Identify additional keys in premise_scores

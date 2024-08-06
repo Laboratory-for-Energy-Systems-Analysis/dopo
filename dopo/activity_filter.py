@@ -6,7 +6,7 @@ import yaml
 # Sector filter functions from premise
 # ---------------------------------------------------
 
-def act_fltr(
+def _act_fltr(
     database: list,
     fltr = None,
     mask  = None,
@@ -78,13 +78,13 @@ def generate_sets_from_filters(yaml_filepath, database=None) -> dict:
     technologies from the filter specifications.
 
     :param filtr:
-    :func:`activity_maps.InventorySet.act_fltr`.
+    :func:`activity_maps.InventorySet._act_fltr`.
     :return: dictionary with the same keys as provided in filter
         and a set of activity data set names as values.
     :rtype: dict
     """
 
-    filtr=get_mapping(yaml_filepath, var='ecoinvent_aliases')
+    filtr=_get_mapping(yaml_filepath, var='ecoinvent_aliases')
 
     names = []
 
@@ -115,7 +115,7 @@ def generate_sets_from_filters(yaml_filepath, database=None) -> dict:
 
 
     techs = {
-        tech: act_fltr(subset, fltr.get("fltr"), fltr.get("mask"))
+        tech: _act_fltr(subset, fltr.get("fltr"), fltr.get("mask"))
         for tech, fltr in filtr.items()
     }
 
@@ -126,7 +126,7 @@ def generate_sets_from_filters(yaml_filepath, database=None) -> dict:
 
     return mapping
 
-def get_mapping(filepath, var): 
+def _get_mapping(filepath, var): 
     """
     Loa a YAML file and return a dictionary given a variable.
     :param filepath: YAML file path
