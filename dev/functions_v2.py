@@ -862,10 +862,13 @@ def calc_relative_changes(ecoinvent_scores, premise_scores):
     # Match activities_list and calculate relative changes
     relative_changes = {}
     relative_changes['method']=ecoinvent_scores['method']
+
+    # Track additional keys in premise_scores
+    additional_premise_keys = []
     
     for key, original_score in ecoinvent_scores.items():
-        if key in premise_scores:
-            # Skip if original_score is a tuple
+        if key in premise_scores: #activities only in premise_scores are according to this logic neglected.
+            # Skip if original_score is a tuple due to information tuple key
             if isinstance(original_score, tuple):
                 continue
             
@@ -873,10 +876,16 @@ def calc_relative_changes(ecoinvent_scores, premise_scores):
             relative_change = compute_relative_change(original_score, transformed_score)
             relative_changes[key] = relative_change
 
+    # Identify additional keys in premise_scores
+    for key in premise_scores.keys():
+        if key not in ecoinvent_scores:
+            additional_premise_keys.append(key)
+    
     # Print the dataframes_dict
     for key, change in relative_changes.items():
         print(f"{key}: {change}")
+
+    if additional_premise_keys:
+        print("Additional keys in premise_scores not found in ecoinvent_scores:", additional_premise_keys)
     
     return relative_changes
-
-''' NOTE: It is yet not considered how to treat activities if they are only contained in premise but not in ecoinvent database'''
