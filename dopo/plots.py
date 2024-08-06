@@ -152,37 +152,6 @@ def lvl21_plot_stacked_absolute(dataframes_dict, title_key=None):
         # Display the plot
         plt.show()
 
-# LEVEL 2.3
-# ---------
-# Function for plotting: Level 2.3 bar plot comparing input not characterized across sector/ activity list
-# --------------------------------------------------------------------------------------------------------
-
-def lvl23_plot_input_comparison_plot_no_method(activities_list, input_type, input_number,):
-    '''
-    Comparing one specific cpc input among activities without method.
-
-    :param activities_list: list of activities to plot inputs for. Perhabs the one defined at the beginning.
-    :param input_type: type of the activities input default 'list', other 'dict'
-    :param input_number: the cpc code of the input that is supposed to be plotted
-
-    '''
-    cpc_input_dataframe = get_cpc_inputs_of_activities(activities_list, input_type)
-
-    x_input_fltr= [x for x in cpc_input_dataframe.columns if str(input_number) in str(x)][0]
-    
-    df= cpc_input_dataframe[x_input_fltr]
-    
-    df = df.sort_values(ascending=False)
-    ax = df.plot(kind='bar', x=x_input_fltr, figsize=(14, 6))
-    ax.set_xlabel('Activity/ Dataset')
-    ax.set_ylabel(f"{cpc_input_dataframe['unit'].iloc[0]}")
-    ax.set_title(f'Comparison Plot for not characterized Input - {x_input_fltr}')
-
-    # Generate the legend text to map index to activity
-    legend_text = generate_legend_text(cpc_input_dataframe)
-    # Add the legend text to the right of the plot
-    ax.text(1.02, 0.5, '\n'.join(legend_text), transform=ax.transAxes, ha='left', va='center', fontsize=11, bbox=dict(facecolor='white', alpha=0.2, edgecolor='grey'))
-
 # LEVEL 2.2
 # ----------
 # Function for plotting: Level 2.2 bar plot comparing one input characterized by one method across sector/ activity list
@@ -224,6 +193,37 @@ def lvl22_plot_input_comparison_with_method(dataframes_dict, dataframe_key, inpu
     plt.text(1.02, 0.5, '\n'.join(legend_text), transform=ax.transAxes, ha='left', va='center', fontsize=11, bbox=dict(facecolor='white', alpha=0.2, edgecolor='grey'))
     
     plt.show()
+
+# LEVEL 2.3
+# ---------
+# Function for plotting: Level 2.3 bar plot comparing input not characterized across sector/ activity list
+# --------------------------------------------------------------------------------------------------------
+
+def lvl23_plot_input_comparison_plot_no_method(activities_list, input_type, input_number,):
+    '''
+    Comparing one specific cpc input among activities without method.
+
+    :param activities_list: list of activities to plot inputs for. Perhabs the one defined at the beginning.
+    :param input_type: type of the activities input default 'list', other 'dict'
+    :param input_number: the cpc code of the input that is supposed to be plotted
+
+    '''
+    cpc_input_dataframe = get_cpc_inputs_of_activities(activities_list, input_type)
+
+    x_input_fltr= [x for x in cpc_input_dataframe.columns if str(input_number) in str(x)][0]
+    
+    df= cpc_input_dataframe[x_input_fltr]
+    
+    df = df.sort_values(ascending=False)
+    ax = df.plot(kind='bar', x=x_input_fltr, figsize=(14, 6))
+    ax.set_xlabel('Activity/ Dataset')
+    ax.set_ylabel(f"{cpc_input_dataframe['unit'].iloc[0]}")
+    ax.set_title(f'Comparison Plot for not characterized Input - {x_input_fltr}')
+
+    # Generate the legend text to map index to activity
+    legend_text = generate_legend_text(cpc_input_dataframe)
+    # Add the legend text to the right of the plot
+    ax.text(1.02, 0.5, '\n'.join(legend_text), transform=ax.transAxes, ha='left', va='center', fontsize=11, bbox=dict(facecolor='white', alpha=0.2, edgecolor='grey'))
 
 # LEVEL 3
 # --------
