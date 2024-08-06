@@ -238,6 +238,7 @@ def create_method_dict(selected_methods_list):
     method_dict = {}
     for method in selected_methods_list:
         method_dict[method] = {
+            'short name': str(method.name[2]),
             'method name': str(method.name),
             'method unit': str(method.metadata['unit'])
         }
@@ -277,7 +278,7 @@ def compare_activities_multiple_methods(activities_list, methods, identifier, ou
         var_name = f"{identifier}_{method_name}"
 
         #add two columns method and method unit to the df
-        result['method'] = str(method.name)
+        result['method'] = str(method.name[2])
         result['method unit'] = str(method.metadata['unit'])
         
         #order the columns after column unit
@@ -507,6 +508,7 @@ def lvl21_plot_stacked_absolute(dataframes_dict, title_key=None):
     :param dataframes_dict: dictionary resulting from the function "compare_activities_multiple_methods" (and subsequently "small_inputs_to_other_column")
     :param title_key: some string for the plot titles
     '''
+    
     # Step 1: Collect all unique categories
     all_categories = set()
    
@@ -529,6 +531,7 @@ def lvl21_plot_stacked_absolute(dataframes_dict, title_key=None):
     # Step 3: Plot each DataFrame
     for key, df in dataframes_dict.items():
         if 'total' in df.columns:
+            df_og = df.copy() #for calling method and informative column in title and axis
             total_index = df.columns.get_loc('total')
             df = df.iloc[:, total_index + 1:]
        
@@ -540,22 +543,17 @@ def lvl21_plot_stacked_absolute(dataframes_dict, title_key=None):
         
         # Plotting the DataFrame with the custom color map
         df.plot(kind='bar', stacked=True, ax=ax, color=[color_map[col] for col in df.columns])
-       
+
         # Add titles and labels
-        method = df['method'].iloc[0] if 'method' in df else 'Method'
-        method_unit = df['method unit'].iloc[0] if 'method unit' in df else 'Unit'
-        ax.set_title(f"{title_key} - {method} in {method_unit}", fontsize=16)
+        ax.set_title(f"{str(title_key)} - {df_og['method'].iloc[0]} in {df_og['method unit'].iloc[0]}")
         ax.set_xlabel('Activity/ Dataset')
-        ax.set_ylabel(f"{method_unit}")
+        ax.set_ylabel(f"{df_og['method unit'].iloc[0]}")
         
         # First legend: Categories
         first_legend = ax.legend(title='Categories', loc='center left', bbox_to_anchor=(1, 0.5), fontsize='small')
         
         # Add the first legend manually
         ax.add_artist(first_legend)
-        
-        # Set the title
-        ax.set_title(key, fontsize=16)
         
         # Generate the legend text using the first dataframe
         legend_text = generate_legend_text(dataframes_dict)
@@ -565,7 +563,7 @@ def lvl21_plot_stacked_absolute(dataframes_dict, title_key=None):
                  verticalalignment='bottom', bbox=dict(facecolor='white', alpha=0.2, edgecolor='grey'))
         
         # Rotate x-axis labels for better readability
-        plt.xticks(rotation=45, ha='right')
+        plt.xticks(rotation=90, ha='right')
        
         # Adjust layout to make room for both legends
         plt.tight_layout()
