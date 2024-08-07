@@ -1,0 +1,218 @@
+Cement:
+  ecoinvent_aliases:
+    fltr:
+      name: cement production
+      reference product: cement   
+    mask:
+      name:
+        - carbon dioxide
+        - new alternative
+      reference product:
+        - slag
+        - nickel
+        - hard coal ash
+
+Concrete:
+  ecoinvent_aliases:
+    fltr:
+      name: concrete production
+      reference product: concrete
+
+    mask:
+      name:
+        - treatment
+        - market
+        - fibre
+      reference product:
+        - waste
+
+Steel:
+  ecoinvent_aliases:
+    fltr:
+      name: steel production
+      reference product: steel
+
+    mask:
+      reference product:
+        - heat, district or industrial, other than natural gas
+        - vanadium
+
+Electricity production all:
+  ecoinvent_aliases:
+    fltr:
+      name: electricity production
+
+Electricity production fossil:
+  ecoinvent_aliases:
+    fltr:
+     - electricity production
+    mask:
+      name:
+        - biomass
+        - biomethane
+        - hydro
+        - geothermal
+        - photovoltaic
+        - solar
+        - wind
+        - wood
+        - nuclear
+        - Evolutionary
+        - refinery operation
+        - compressed air
+        - aluminium industry
+
+Electricity production renewables:
+ ecoinvent_aliases:
+  fltr:
+   name: electricity production
+
+  mask:
+    name:
+      - coal
+      - lignite
+      - natural gas
+      - oil
+      - nuclear
+      - Evolutionary
+      - Reactor
+      - petroleum
+
+Electricity production nuclear:
+ ecoinvent_aliases:
+  fltr:
+   name: electricity production
+  
+  mask: 
+    name:
+      - coal
+      - lignite
+      - natural gas
+      - oil
+      - hydro
+      - wind
+      - solar
+      - photovoltaic
+      - geothermal
+      - wood
+      - biomass
+      - wave energy
+      - biomethane
+      - petroleum 
+      - compressed air
+      - aluminium industry
+      - peat
+
+Electricity production biomass:
+ ecoinvent_aliases:
+  fltr:
+   name: 
+    - electricity production
+    - biomass
+
+Electricity production biomethane:
+ ecoinvent_aliases:
+  fltr:
+   name: 
+    - electricity production
+    - biomethane
+
+Electricity production hydro:
+ ecoinvent_aliases:
+  fltr:
+   name: 
+    - electricity production
+    - hydro
+  mask:
+    name: hydrogen-fired
+
+Electricity production geothermal:
+ ecoinvent_aliases:
+  fltr:
+   name: 
+    - electricity production
+    - geothermal
+
+Electricity production photovoltaic:
+ ecoinvent_aliases:
+  fltr:
+   name: 
+    - electricity production
+    - photovoltaic
+
+Electricity production solar:
+ ecoinvent_aliases:
+  fltr:
+   name: 
+    - electricity production
+    - solar
+
+Electricity production wind:
+ ecoinvent_aliases:
+  fltr:
+   name: 
+    - electricity production
+    - wind
+
+Electricity production wood:
+ ecoinvent_aliases:
+  fltr:
+   name: 
+    - electricity production
+    - wood
+
+Electricity production wave energy:
+ ecoinvent_aliases:
+  fltr:
+   name: 
+    - electricity production
+    - wave energy
+
+Electricity production coal:
+ ecoinvent_aliases:
+  fltr:
+   name: 
+    - electricity production
+    - coal
+  mask:
+    reference product: internal use in coal mining
+
+Electricity production lignite:
+ ecoinvent_aliases:
+  fltr:
+   name: 
+    - electricity production
+    - lignite
+
+Electricity production natural gas:
+ ecoinvent_aliases:
+  fltr:
+   name: 
+    - electricity production
+    - natural gas
+  mask:
+    name: hydrogen
+  
+
+Electricity production oil:
+ ecoinvent_aliases:
+  fltr:
+   name: 
+    - electricity production
+    - oil
+  mask:
+    name: nuclear
+
+Electricity production petroleum:
+ ecoinvent_aliases:
+  fltr:
+   name: 
+    - electricity production
+    - petroleum
+
+
+
+
+
+
+

@@ -1,0 +1,13 @@
+Cement:
+  ecoinvent_aliases:
+    fltr:
+      name: 
+        - cement production
+        - Portland
+    mask:
+      name:
+        - Slag
+        - Pozzolana
+      location:
+        - RoW
+        - Europe without Switzerland
