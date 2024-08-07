@@ -208,7 +208,7 @@ def lvl23_plot_input_comparison_plot_no_method(activities_list, input_type, inpu
     :param input_number: the cpc code of the input that is supposed to be plotted
 
     '''
-    cpc_input_dataframe = get_cpc_inputs_of_activities(activities_list, input_type)
+    cpc_input_dataframe = _get_cpc_inputs_of_activities(activities_list, input_type)
 
     x_input_fltr= [x for x in cpc_input_dataframe.columns if str(input_number) in str(x)][0]
     

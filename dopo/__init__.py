@@ -20,6 +20,7 @@ __version__ = "0.0.1"
 from dopo.activity_filter import generate_sets_from_filters
 from dopo.methods import MethodFinder
 from dopo.sector_score_dict import compare_activities_multiple_methods
+from dopo.sector_score_dict import small_inputs_to_other_column
 from dopo.plots import (
     lvl1_plot, 
     lvl21_plot_stacked_absolute, 
