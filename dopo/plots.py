@@ -11,13 +11,15 @@ import seaborn as sns
 
 # LEVEL 1
 # -------
-# Function for plotting: Level 1 dot plot with standard deviation and IQR range
+# Function for plotting: Level 1 dot plot with standard deviation
+# and IQR range
 # ------------------------------------------------------------------------------
 
 
-def lvl1_plot(dataframes_dict, title_key=None):
+def scores_across_activities(dataframes_dict: dict, title_key: str=None) -> None:
     """
-    Plots the total score value for each activity sorted from largest to smallest. Visualizes IQR and standard deviation.
+    Plots the total score value for each activity sorted from largest
+    to smallest. Visualizes IQR and standard deviation.
     Generates as many plots as methods were defined.
 
     :param dataframes_dict: dictionary resulting from the function "compare_activities_multiple_methods" (and subsequently "small_inputs_to_other_column")
@@ -43,10 +45,23 @@ def lvl1_plot(dataframes_dict, title_key=None):
         std_gwp = df["total"].std()
 
         # Plot using seaborn swarmplot
-        sns.swarmplot(data=df, x=df.index, y="total", dodge=True, ax=ax, order=order)
+        sns.swarmplot(
+            data=df,
+            x=df.index,
+            y="total",
+            dodge=True,
+            ax=ax,
+            order=order
+        )
 
         # Add mean line
-        ax.axhline(mean_gwp, color="grey", linestyle="--", linewidth=1, label="Mean")
+        ax.axhline(
+            mean_gwp,
+            color="grey",
+            linestyle="--",
+            linewidth=1,
+            label="Mean"
+        )
 
         # Add horizontal lines for Q1 and Q3
         ax.hlines(
@@ -68,7 +83,8 @@ def lvl1_plot(dataframes_dict, title_key=None):
             label="Q1 (25th percentile)",
         )
 
-        # Add horizontal shading for areas above and below 2 standard deviations from the mean
+        # Add horizontal shading for areas above
+        # and below 2 standard deviations from the mean
         ax.axhspan(
             mean_gwp - 2 * std_gwp,
             mean_gwp - 3 * std_gwp,
@@ -86,7 +102,8 @@ def lvl1_plot(dataframes_dict, title_key=None):
 
         # Add titles and labels
         ax.set_title(
-            f"{str(title_key)} - {df['method'].iloc[0]} in {df['method unit'].iloc[0]}"
+            f"{str(title_key)} - {df['method'].iloc[0]} "
+            f"in {df['method unit'].iloc[0]}"
         )
         ax.set_xlabel("Activity/ Dataset")
         ax.set_ylabel(f"{df['method unit'].iloc[0]}")
@@ -123,9 +140,11 @@ def lvl1_plot(dataframes_dict, title_key=None):
 # ------------------------------------------------------------
 
 
-def lvl21_plot_stacked_absolute(dataframes_dict, title_key=None):
+def inputs_contributions(dataframes_dict: dict, title_key: str = None) -> None:
     """
-    Comparing activities and the input contributions to the total score by plotting a stacked absolute bar plot for each method.
+    Comparing activities and the input contributions to
+    the total score by plotting a stacked absolute
+    bar plot for each method.
 
     :param dataframes_dict: dictionary resulting from the function "compare_activities_multiple_methods" (and subsequently "small_inputs_to_other_column")
     :param title_key: some string for the plot titles
@@ -175,7 +194,8 @@ def lvl21_plot_stacked_absolute(dataframes_dict, title_key=None):
 
         # Add titles and labels
         ax.set_title(
-            f"{str(title_key)} - {df_og['method'].iloc[0]} in {df_og['method unit'].iloc[0]}"
+            f"{str(title_key)} - {df_og['method'].iloc[0]} "
+            f"in {df_og['method unit'].iloc[0]}"
         )
         ax.set_xlabel("Activity/ Dataset")
         ax.set_ylabel(f"{df_og['method unit'].iloc[0]}")
@@ -222,9 +242,9 @@ def lvl21_plot_stacked_absolute(dataframes_dict, title_key=None):
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def lvl22_plot_input_comparison_with_method(
-    dataframes_dict, dataframe_key, input_number
-):
+def inputs_contribution(
+    dataframes_dict: dict, dataframe_key: str, input_number: str
+) -> None:
     """
     Comparing one specific cpc input among activities for each method.
 
@@ -277,11 +297,11 @@ def lvl22_plot_input_comparison_with_method(
 # --------------------------------------------------------------------------------------------------------
 
 
-def lvl23_plot_input_comparison_plot_no_method(
-    activities_list,
+def input_contribution_across_activities(
+    activities_list: list,
     input_type,
-    input_number,
-):
+    input_number: str,
+) -> None:
     """
     Comparing one specific cpc input among activities without method.
 
@@ -325,7 +345,7 @@ def lvl23_plot_input_comparison_plot_no_method(
 # ------------------------------------------------------------------------------------------------------------
 
 
-def lvl3_plot_relative_changes(database, premise_database, method):
+def activities_across_databases(database, premise_database, method):
     """
     A function that plots the relative changes in activitiy LCA scores (for one defined method) between a "raw" ecoinvent database and a premise transformed ecoinvent database.
 
