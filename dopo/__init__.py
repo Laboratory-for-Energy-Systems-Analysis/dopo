@@ -5,14 +5,12 @@ __all__ = (
     "__version__",
     'generate_sets_from_filters',
     'MethodFinder',
-    'find_and_create_method',
-    'get_all_methods',
     'compare_activities_multiple_methods',
-    'lvl1_plot',
-    'lvl21_plot_stacked_absolute', 
-    'lvl22_plot_input_comparison_with_method', 
-    'lvl23_plot_input_comparison_plot_no_method', 
-    'lvl3_plot_relative_changes' 
+    'scores_across_activities',
+    'inputs_contributions',
+    'inputs_contribution',
+    'input_contribution_across_activities',
+    'activities_across_databases'
 )
 
 __version__ = "0.0.1"
@@ -22,9 +20,9 @@ from dopo.methods import MethodFinder
 from dopo.sector_score_dict import compare_activities_multiple_methods
 from dopo.sector_score_dict import small_inputs_to_other_column
 from dopo.plots import (
-    lvl1_plot, 
-    lvl21_plot_stacked_absolute, 
-    lvl22_plot_input_comparison_with_method, 
-    lvl23_plot_input_comparison_plot_no_method, 
-    lvl3_plot_relative_changes 
+    scores_across_activities,
+    inputs_contributions,
+    inputs_contribution,
+    input_contribution_across_activities,
+    activities_across_databases
 )

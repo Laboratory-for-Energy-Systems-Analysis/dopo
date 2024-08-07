@@ -6,10 +6,11 @@ import yaml
 # Sector filter functions from premise
 # ---------------------------------------------------
 
+
 def _act_fltr(
     database: list,
-    fltr = None,
-    mask  = None,
+    fltr=None,
+    mask=None,
 ):
     """Filter `database` for activities_list matching field contents given by `fltr` excluding strings in `mask`.
     `fltr`: string, list of strings or dictionary.
@@ -49,25 +50,22 @@ def _act_fltr(
         if isinstance(value, list):
             for val in value:
                 filters = [a for a in filters if val in a[field]]
-                
-            #filters.extend([ws.either(*[ws.contains(field, v) for v in value])])
-        else:
-            filters = [
-                a for a in filters if value in a[field]
-            ]
 
-            #filters.append(ws.contains(field, value))
-    
+            # filters.extend([ws.either(*[ws.contains(field, v) for v in value])])
+        else:
+            filters = [a for a in filters if value in a[field]]
+
+            # filters.append(ws.contains(field, value))
 
     if mask:
         for field, value in mask.items():
             if isinstance(value, list):
                 for val in value:
                     filters = [f for f in filters if val not in f[field]]
-                #filters.extend([ws.exclude(ws.contains(field, v)) for v in value])
+                # filters.extend([ws.exclude(ws.contains(field, v)) for v in value])
             else:
                 filters = [f for f in filters if value not in f[field]]
-                #filters.append(ws.exclude(ws.contains(field, value)))
+                # filters.append(ws.exclude(ws.contains(field, value)))
 
     return filters
 
@@ -84,7 +82,7 @@ def generate_sets_from_filters(yaml_filepath, database=None) -> dict:
     :rtype: dict
     """
 
-    filtr=_get_mapping(yaml_filepath, var='ecoinvent_aliases')
+    filtr = _get_mapping(yaml_filepath, var="ecoinvent_aliases")
 
     names = []
 
@@ -98,35 +96,26 @@ def generate_sets_from_filters(yaml_filepath, database=None) -> dict:
             else:
                 names.append(entry["fltr"])
 
-    #subset = list(
+    # subset = list(
     #    ws.get_many(
     #        database,
     #        ws.either(*[ws.contains("name", name) for name in names]),
     #    )
-    #)
+    # )
 
-    subset=[
-        a for a in database if any(
-    
-    
-            x in a["name"] for x in names
-        )
-    ]
-
+    subset = [a for a in database if any(x in a["name"] for x in names)]
 
     techs = {
         tech: _act_fltr(subset, fltr.get("fltr"), fltr.get("mask"))
         for tech, fltr in filtr.items()
     }
 
-    mapping = {
-        tech: {act for act in actlst} for tech, actlst in techs.items()
-    }
-
+    mapping = {tech: {act for act in actlst} for tech, actlst in techs.items()}
 
     return mapping
 
-def _get_mapping(filepath, var): 
+
+def _get_mapping(filepath, var):
     """
     Loa a YAML file and return a dictionary given a variable.
     :param filepath: YAML file path
@@ -142,10 +131,9 @@ def _get_mapping(filepath, var):
     for key, val in techs.items():
         if var in val:
             mapping[key] = val[var]
-            
+
     return mapping
 
 
-# Example on how to call the functions to create a set of filtered activities_list 
-#set_from_fltrs = generate_sets_from_filters(yaml_filepath, database=ei39SSP)
-
+# Example on how to call the functions to create a set of filtered activities_list
+# set_from_fltrs = generate_sets_from_filters(yaml_filepath, database=ei39SSP)
