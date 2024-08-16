@@ -5,6 +5,7 @@ __all__ = (
     "__version__",
     'generate_sets_from_filters',
     'MethodFinder',
+    ''
     'compare_activities_multiple_methods',
     'scores_across_activities',
     'inputs_contributions',
@@ -25,4 +26,11 @@ from dopo.plots import (
     inputs_contribution,
     input_contribution_across_activities,
     activities_across_databases
+)
+from dopo.dopo_excel import (
+    process_yaml_files,
+    sector_lca_scores,
+    sector_lca_scores_to_excel_and_column_positions,
+    dot_plots,
+    stacked_bars
 )
