@@ -85,8 +85,9 @@ def small_inputs_to_other_column(dataframes_dict, cutoff=0.01):
     Set the aggregated values to zero in their original columns.
     Remove any columns that end up containing only zeros.
 
-    :param dataframes_dict: the dictionary
+    Additionally, if a column is named None or "Unnamed", its values will be added to the 'other' column and then the original column will be deleted.
 
+    :param dataframes_dict: the dictionary
     '''
     
     processed_dict = {}
@@ -100,16 +101,26 @@ def small_inputs_to_other_column(dataframes_dict, cutoff=0.01):
         numeric_cols = df.iloc[:, total_col_index:]
         numeric_cols = numeric_cols.astype(float)
         
-        # Calculate the threshold for each row (1% of total)
+        # Calculate the threshold for each row (cutoff% of total)
         threshold = numeric_cols['total'] * cutoff
         
         # Create 'other' column
         numeric_cols['other'] = 0.0
         
+        # Identify and handle columns that are None or called "Unnamed"
+        columns_to_remove = []
+        for col in df.columns:
+            if col is None or col.startswith("Unnamed"):
+                numeric_cols['other'] += df[col]  # Add the values to the 'other' column
+                columns_to_remove.append(col)
+        
+        # Drop the identified columns
+        df.drop(columns=columns_to_remove, inplace=True)
+
         # Process each numeric column (except 'total' and 'other')
         for col in numeric_cols.columns[1:-1]:  # Skip 'total' and 'other'
             # Identify values less than the threshold
-            mask = abs(numeric_cols[col]) < threshold #abs() to include negative contributions
+            mask = abs(numeric_cols[col]) < threshold # abs() to include negative contributions
             
             # Add these values to 'other'
             numeric_cols.loc[mask, 'other'] += numeric_cols.loc[mask, col]
@@ -127,7 +138,7 @@ def small_inputs_to_other_column(dataframes_dict, cutoff=0.01):
         # Combine string and processed numeric columns
         processed_df = pd.concat([string_cols, numeric_cols], axis=1)
         
-        #Sort columns by total
+        # Sort DataFrame by total (optional)
         processed_df = processed_df.sort_values('total', ascending=False)
         
         # Store the processed DataFrame in the result dictionary

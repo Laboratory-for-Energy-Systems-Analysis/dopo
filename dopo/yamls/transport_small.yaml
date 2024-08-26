@@ -1,0 +1,21 @@
+Transport:
+  ecoinvent_aliases:
+    fltr:
+      name: 
+        - transport
+        - freight
+        - lorry
+        - plugin diesel hybrid
+
+    mask:
+      name:
+        - 7.5t
+        - 3.5t
+        - 18t
+
+
+
+
+
+
+
