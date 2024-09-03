@@ -74,6 +74,7 @@ def sector_lca_scores_to_excel_and_column_positions(scores_dict, excel_file_name
     with pd.ExcelWriter(excel_file, engine='openpyxl') as writer:
         for sector in scores_dict.keys():
             lca_scores = scores_dict[sector]['lca_scores']
+
             for method, table in lca_scores.items():
                 # Create a DataFrame for the current LCA score table
                 df = pd.DataFrame(table)
@@ -107,6 +108,7 @@ def sector_lca_scores_to_excel_and_column_positions(scores_dict, excel_file_name
                     
                 # Save the DataFrame to the Excel file in a new worksheet
                 df.to_excel(writer, sheet_name=worksheet_name, index=False)
+            
         return column_positions
     
 

@@ -11,8 +11,6 @@ from openpyxl import load_workbook
 from openpyxl.chart import ScatterChart, Reference, Series
 from openpyxl.chart import BarChart, Reference
 
-import copy	
-
 def process_yaml_files(files_dict, database):
     '''
     - Runs through the files_dict reading the defined filters in the yaml files.
@@ -26,23 +24,14 @@ def process_yaml_files(files_dict, database):
     It returns an updated dictionary which contains filtered activity lists for each sector.
     '''
 
-    main_dict = copy.deepcopy(files_dict)
-
+    main_dict=files_dict.copy()
     for key, value in main_dict.items():
         yaml_file = value['yaml']
         yaml_identifier = value['yaml identifier']
         
-        #debug
-        print(f"Processing {key} with database {database.name}") # check for right database
-        
         # Generate the sector activities
-        sector_activities = generate_sets_from_filters(yaml_file, database)
+        sector_activities = generate_sets_from_filters(yaml_file, database=database)
         
-        #debug
-        print(f"Activities for {key}:")
-        for activity in sector_activities[yaml_identifier]:
-            print(f"  {activity.key}")
-
         # Convert the set of activities to a list
         activities_list = list(sector_activities[yaml_identifier])
         
@@ -232,18 +221,13 @@ def add_sector_marker(df, sector):
     df['sector']=str(sector) # potentially remove!
     # Reorder the columns to move 'sector' after 'product'
     columns = list(df.columns)
-
-    if 'product' in df.columns:
-        product_index = columns.index('product')
-        # Insert 'sector' after 'product'
-        columns.insert(product_index + 1, columns.pop(columns.index('sector')))
-    else:
-        # If 'product' does not exist, 'sector' remains in the last column
-        columns.append(columns.pop(columns.index('sector')))
-        
+    product_index = columns.index('product')
+    # Insert 'sector' after 'product'
+    columns.insert(product_index + 1, columns.pop(columns.index('sector')))
     # Reassign the DataFrame with the new column order
     df = df[columns]
     return df
+
 
 # IN EXCEL
 def categorize_sheets_by_sector(file_path):

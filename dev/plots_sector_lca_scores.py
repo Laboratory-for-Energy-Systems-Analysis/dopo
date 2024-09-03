@@ -1,14 +1,21 @@
-import re
+#PLOTS
+import brightway2 as bw
+import bw2data as bd
+import bw2analyzer as ba
+
+#reduce?
+import ast
 import pandas as pd
-from dopo import generate_sets_from_filters
-from dopo import compare_activities_multiple_methods
-from dopo import small_inputs_to_other_column
-import openpyxl
+import matplotlib.pyplot as plt
+import seaborn as sns
+import dopo
+from dopo import*
+
+
 from openpyxl import load_workbook
 from openpyxl.chart import ScatterChart, Reference, Series
-from openpyxl.chart import BarChart, Reference
 
-# IN EXCEL
+
 def _categorize_sheets_by_sector(file_path):
     # Load the workbook
     workbook = load_workbook(filename=file_path, read_only=True)
@@ -18,6 +25,10 @@ def _categorize_sheets_by_sector(file_path):
     
     # Iterate over all sheet names in the workbook
     for sheet_name in workbook.sheetnames:
+        # Skip combined sector sheets (assuming these sheets don't have an underscore)
+        if '_' not in sheet_name:
+            continue
+        
         # Split the sheet name to extract the sector (assumes sector is the first part)
         sector = sheet_name.split('_')[0]
         
@@ -30,12 +41,6 @@ def _categorize_sheets_by_sector(file_path):
     return worksheet_dict
 
 
-# ----
-#PLOTS
-# ----
-
-from openpyxl import load_workbook
-from openpyxl.chart import ScatterChart, Reference, Series
 
 def dot_plots_xcl(filepath_workbook, index_positions):
 
@@ -272,7 +277,7 @@ def stacked_bars_xcl(filepath_workbook, index_positions, current_row_dot_plot):
             method_unit_value = ws.cell(row=2, column=method_unit_col).value
             chart.y_axis.title = f"{method_unit_value}"
             
-            chart.x_axis.title = 'activity index'
+            chart.x_axis.title = 'activity rank'
 
             # Avoid overlap
             chart.title.overlay = False
@@ -317,123 +322,4 @@ def stacked_bars_xcl(filepath_workbook, index_positions, current_row_dot_plot):
         wb._sheets.insert(0, ws_charts)
         
     wb.save(filepath_workbook)
-
-# Plot 3: Comparing databases
-
-import pandas as pd
-import openpyxl
-from openpyxl.chart import BarChart, Reference
-
-def barchart_compare_db_xcl(filename, worksheet_dict=None, index_positions=None):
-
-    # Load the workbook and select the sheet
-    wb = openpyxl.load_workbook(filename)
-
-    # Iterate over each sector and its associated worksheets
-    for sector, worksheet_names in worksheet_dict.items():
-        
-        # Create or get the chart sheet for the current sector
-        chart_sheet_name = f"{sector}_charts"
-        if chart_sheet_name in wb.sheetnames:
-            ws_charts = wb[chart_sheet_name]
-        else:
-            ws_charts = wb.create_sheet(chart_sheet_name)  
-        
-        # Initial position for the first chart
-        current_row = 1  # Start placing charts from row 1
-        current_col = 1  # Start placing charts from column 1
-        chart_height = 30  # Number of rows a chart occupies
-        chart_width = 12   # Number of columns a chart occupies
-        charts_per_row = 2  # Number of charts per row
-    
-        # Iterate over each worksheet name in the current sector
-        for i, worksheet_name in enumerate(worksheet_names):
-            ws = wb[worksheet_name]
-
-            # # Find the key in index_positions that contains worksheet_name
-            # matching_key = None
-            # for key in index_positions.keys():
-            #     if worksheet_name in key:
-            #         matching_key = key
-            #         break
-
-            # if not matching_key:
-            #     print(f"Warning: No matching key found for worksheet '{worksheet_name}'. Skipping...")
-            #     continue
-
-            # Retrieve the column positions from the index_positions dictionary
-            # positions = index_positions[matching_key]
-
-            # Find min_row, max_row and max_column
-            min_col_data = 15 #positions.get("relative_change", None) + 1
-            rank_col = 17#positions.get("rank", None) + 1
-            method_col = 5#positions.get("method", None) + 1
-            method_unit_col = 6#positions.get("method unit", None) + 1
-
-            # Create a bar chart
-            chart = BarChart()
-            chart.type="bar"
-            chart.style=2
-            chart.overlap= 100
-            chart.title = "Relative Change in LCA Scores"
-            chart.x_axis.title = "Activity"
-            chart.y_axis.title = "Relative Change (%)"
-
-            # Set the data for the chart
-            data = Reference(ws, min_col=min_col_data, min_row=1, max_row=ws.max_row)
-            categories = Reference(ws, min_col=rank_col, min_row=2, max_row=ws.max_row)
-            chart.add_data(data, titles_from_data=True)
-            chart.set_categories(categories)
-
-            # Modify each series in the chart to disable the inversion of negative values 
-            for series in chart.series:
-                series.invertIfNegative = False
-
-            # x-axis tickes
-            chart.x_axis.tickLblPos = "low"
-            chart.x_axis.majorGridlines = None 
-            chart.x_axis.tickMarkSkip = 1  # Show all tick marks, this adresses the tick lines 
-            chart.x_axis.tickLblSkip = 1  # Show all labels, doesnt work
-            chart.x_axis.delete = False  # Ensure axis is not deleted
-
-            # Chart titles
-            method_value = ws.cell(row=2, column=method_col).value
-            chart.title = f"{sector} {method_value} database lca scores relative changes"
-
-            method_unit_value = ws.cell(row=2, column=method_unit_col).value
-            chart.x_axis.title = f"{method_unit_value}"
-            
-            chart.y_axis.title = 'relative change (%)' #its switched..... should be x_axis
-
-            # Avoid overlap
-            chart.title.overlay = False
-            chart.x_axis.title.overlay = False
-            chart.y_axis.title.overlay = False 
-            chart.legend.overlay = False
-
-            # Adjust chart dimensions
-            chart.width = 20  # Width of the chart
-            chart.height = 14  # Height of the chart
-
-            # Calculate the position for this chart
-            position = ws_charts.cell(row=current_row, column=current_col).coordinate
-            ws_charts.add_chart(chart, position)
-
-            # Update position for the next chart
-            current_col += chart_width +1 
-            if (i + 1) % charts_per_row == 0:  # Move to the next row after placing `charts_per_row` charts
-                current_row += chart_height +1
-                current_col = 1  # Reset to the first column
-
-        # Move the chart sheet to the first position
-        wb._sheets.remove(ws_charts)
-        wb._sheets.insert(0, ws_charts)
-
-            # Add the chart to a new worksheet
-            # new_sheet = wb.create_sheet(title="LCA Chart")
-            # new_sheet.add_chart(chart, "A1")
-
-    # Save the workbook
-    wb.save(filename)
-
-    print(f"Results and chart saved to {filename}")
+    return current_row

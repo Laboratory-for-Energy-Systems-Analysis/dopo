@@ -91,13 +91,14 @@ def _relative_changes_df(database_dict_eco, database_dict_premise):
                 df_premise['activity_code'] = df_premise['activity key'].apply(lambda x: x[1])
 
                 # Merge the two dataframes based on the activity code and method name
-                merged_df = pd.merge(df_ei, df_premise, on=['activity_code', 'method name'], suffixes=('_ei', '_premise'))
+                merged_df = pd.merge(df_ei, df_premise, on=['activity_code', 'method name'], how='outer', suffixes=('_ei', '_premise'))
 
                 # Calculate the relative change
                 merged_df['relative_change'] = ((merged_df['total_premise'] - merged_df['total_ei']) / merged_df['total_ei']) * 100
 
                 # Store the result in the dictionary
                 relative_dict[sector_key][method_key] = merged_df
+                #merged_df=merged_df.drop('activity_code')
 
     return relative_dict
 
