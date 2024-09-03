@@ -1,25 +1,39 @@
+"""
+Module for LCA Database Comparison and Excel Plotting
+
+Provides functions to compare LCA scores between databases and visualize results in Excel. It uses 
+`brightway2` for LCA calculations and `openpyxl` for Excel operations.
+"""
+
 import brightway2 as bw
 import bw2data as bd
 import bw2analyzer as ba
+
+import pandas as pd
 
 from openpyxl import load_workbook
 from openpyxl.chart import ScatterChart, Reference, Series, BarChart
 from openpyxl.chart.axis import ChartLines
 
-def database_comparison_plots(database_dict_ecoinvent, database_dict_premise, method_dict, excel_file, current_row):
+def database_comparison_plots(database_dict_ecoinvent, database_dict_premise, method_dict,
+                              excel_file, current_row):
     """
-    Generate comparison plots of Life Cycle Assessment (LCA) scores between two databases and save them to an Excel file.
+    Generate comparison plots of Life Cycle Assessment (LCA) scores between two databases and save
+    them to an Excel file.
 
-    This function compares LCA scores between two different databases (e.g., ecoinvent and premise) using the given 
-    impact assessment methods. It generates a bar chart showing the relative changes between the databases and 
-    saves the results to an Excel file.
+    This function compares LCA scores between two different databases (e.g., ecoinvent and premise) 
+    using the given impact assessment methods. It generates a bar chart showing the relative changes
+    between the databases and saves the results to an Excel file.
 
     Args:
-        database_dict_ecoinvent (dict): A dictionary representing the first LCA database (e.g., ecoinvent). 
-                                        Keys are activity names or IDs, and values are corresponding activity data.
-        database_dict_premise (dict): A dictionary representing the second LCA database (e.g., premise). 
-                                      Keys are activity names or IDs, and values are corresponding activity data.
-        method_dict (dict): A dictionary where keys are method names or IDs and values are corresponding method data.
+        database_dict_ecoinvent (dict): A dictionary representing the first LCA database (e.g., 
+                                        ecoinvent). Keys are activity names or IDs, and values are 
+                                        corresponding activity data.
+        database_dict_premise (dict): A dictionary representing the second LCA database (e.g., 
+                                        premise). Keys are activity names or IDs, and values are 
+                                        corresponding activity data.
+        method_dict (dict): A dictionary where keys are method names or IDs and values are 
+                            corresponding method data.
         excel_file (str): The name of the Excel file where the comparison plots will be saved.
         current_row (int): The starting row in the Excel sheet where the bar chart will be inserted.
 
@@ -27,16 +41,21 @@ def database_comparison_plots(database_dict_ecoinvent, database_dict_premise, me
         None
 
     The function performs the following steps:
-    1. Calculates the relative changes in LCA scores between the two databases using the provided methods.
-    2. Saves the results to the specified Excel file, determining the appropriate column positions for the data.
-    3. Generates a bar chart that visually compares the LCA scores between the two databases and appends it to the Excel file.
+    1. Calculates the relative changes in LCA scores between the two databases using the provided 
+        methods.
+    2. Saves the results to the specified Excel file, determining the appropriate column positions 
+        for the data.
+    3. Generates a bar chart that visually compares the LCA scores between the two databases and 
+        appends it to the Excel file.
     4. The starting row for the bar chart is determined by `current_row`.
 
     Note:
-        - The function relies on helper functions such as `relative_changes_db` to calculate the relative changes 
-          between databases and `barchart_compare_db_xcl` to generate and save the bar chart.
+        - The function relies on helper functions such as `relative_changes_db` to calculate the 
+            relative changes between databases and `barchart_compare_db_xcl` to generate and save 
+            the bar chart.
     """
-    column_positions=_relative_changes_db(database_dict_ecoinvent, database_dict_premise, method_dict, excel_file)
+    column_positions=_relative_changes_db(database_dict_ecoinvent, database_dict_premise,
+                                          method_dict, excel_file)
     _barchart_compare_db_xcl(excel_file, column_positions, current_row)
 
 def _lca_scores_compare(database_dict, method_dict):
@@ -62,7 +81,7 @@ def _lca_scores_compare(database_dict, method_dict):
         # Loop through each method in method_dict
         for meth_key, meth_info in method_dict.items():
             data = []  # Initialize a new list to hold data for the current method
-            
+
             # Extract the 'method name' tuple from the current method info
             method_name = meth_info['method name']
             method_short_name=meth_info['short name']
@@ -73,12 +92,12 @@ def _lca_scores_compare(database_dict, method_dict):
                 # Ensure the activity is an instance of the expected class
                 if not isinstance(act, bd.backends.peewee.proxies.Activity):
                     raise ValueError("`activities` must be an iterable of `Activity` instances")
-                
+
                 # Perform LCA calculations
                 lca = bw.LCA({act: 1}, method_name)
                 lca.lci()
                 lca.lcia()
-                
+
                 # Collect data for the current activity and method
                 data.append([
                     act["name"],
@@ -89,18 +108,16 @@ def _lca_scores_compare(database_dict, method_dict):
                     method_unit,
                     lca.score,
                 ])
-            
+
             # Convert the data list to a DataFrame and store it in the sector's dictionary
             method_dataframes[method_short_name] = pd.DataFrame(data, columns=labels)
 
         # Store the method_dataframes dictionary in the sector_dataframes dictionary
         sector_dataframes[sector] = method_dataframes
 
-    # Now `sector_dataframes` is a dictionary where each key is a sector, and the value is another dictionary with method names and their corresponding DataFrames
+    # Now `sector_dataframes` is a dictionary where each key is a sector, and the value is another 
+    # dictionary with method names and their corresponding DataFrames
     return sector_dataframes
-
-
-import pandas as pd
 
 def _relative_changes_df(database_dict_eco, database_dict_premise, method_dict):
 
@@ -127,7 +144,8 @@ def _relative_changes_df(database_dict_eco, database_dict_premise, method_dict):
                 #print(df_premise)
 
                 # Split the 'activity key' to extract the second part
-                df_ei['activity_code'] = df_ei['activity key'].apply(lambda x: x[1])  # Access the second element of the tuple
+                # Access the second element of the tuple
+                df_ei['activity_code'] = df_ei['activity key'].apply(lambda x: x[1])
                 print("df_ei")
                 print(df_ei)
 
@@ -135,21 +153,17 @@ def _relative_changes_df(database_dict_eco, database_dict_premise, method_dict):
                 print("df_premise")
                 print(df_premise)
 
-        #PREVIOUS CODE    
-                # Merge the two dataframes based on the activity code and method name
-                #merged_df = pd.merge(df_ei, df_premise, on=['activity_code', 'method name'], suffixes=('_ei', '_premise'))
-
-        #ADJUSTED CODE
                 # Perform a full outer merge on 'activity_code' and 'method' to include all rows
-                merged_df = pd.merge(df_ei, df_premise, on=['activity_code', 'method'], how='outer', suffixes=('_ei', '_premise'))
+                merged_df = pd.merge(df_ei, df_premise, on=['activity_code', 'method'], how='outer',
+                                     suffixes=('_ei', '_premise'))
 
                 # Calculate the relative change only where both scores are present
-                merged_df['relative_change'] = ((merged_df['total_premise'] - merged_df['total_ei']) / merged_df['total_ei']) * 100
+                merged_df['relative_change'] = ((merged_df['total_premise'] - merged_df['total_ei'])
+                                                 / merged_df['total_ei']) * 100
 
                 # Fill 'relative_change' with NaN where it cannot be calculated due to missing values
                 merged_df['relative_change'] = merged_df['relative_change'].fillna('N/A')
-        #END ADJUSTED CODE
-        
+       
                 # Store the result in the dictionary
                 relative_dict[sector_key][method_key] = merged_df
 
@@ -210,12 +224,14 @@ def _relative_changes_db(database_dict_eco, database_dict_premise, method_dict, 
                 # Sort the DataFrame by 'relative_change' from largest negative to largest positive
                 df = df.sort_values(by='relative_change', ascending=False)
 
-                # Add a 'rank' column based on the 'relative_change', ranking from most negative to least negative
+                # Add a 'rank' column based on the 'relative_change', 
+                # ranking from most negative to least negative
                 df['rank'] = df['relative_change'].rank(ascending=False, method='dense').astype(int)
     
                 # Get the index values of columns
                 columns_of_interest = ["rank", "relative_change", "method", "method unit_ei"]
-                positions = {col: df.columns.get_loc(col) for col in columns_of_interest if col in df.columns}
+                positions = {col: df.columns.get_loc(col) 
+                             for col in columns_of_interest if col in df.columns}
                 column_positions[f"{sector}_comparison_{method}"] = positions
 
                 # Generate worksheet name
@@ -223,15 +239,6 @@ def _relative_changes_db(database_dict_eco, database_dict_premise, method_dict, 
                 if len(worksheet_name) > 31:
                     worksheet_name = worksheet_name[:31]
                 
-                # # Ensure unique sheet name
-                # original_worksheet_name = worksheet_name
-                # counter = 1
-                # while worksheet_name in existing_sheets:
-                #     worksheet_name = f"{original_worksheet_name}_{counter}"
-                #     if len(worksheet_name) > 31:
-                #         worksheet_name = worksheet_name[:31]
-                #     counter += 1
-
                 # Save the DataFrame to the Excel file in a new worksheet
                 df.to_excel(writer, sheet_name=worksheet_name, index=False)
     
@@ -262,12 +269,7 @@ def _categorize_sheets_by_sector_comparison(file_path):
     
     return worksheet_dict
 
-
-from openpyxl import load_workbook
-from openpyxl.chart import BarChart, Reference
-from openpyxl.chart.axis import ChartLines
-
-def _barchart_compare_db_xcl(filename, index_positions, current_row_stacked_bar): #, index_positions=None):
+def _barchart_compare_db_xcl(filename, index_positions, current_row_stacked_bar):
       
     worksheet_dict =_categorize_sheets_by_sector_comparison(file_path=filename)
     # Load the workbook and select the sheet
@@ -373,10 +375,6 @@ def _barchart_compare_db_xcl(filename, index_positions, current_row_stacked_bar)
         # Move the chart sheet to the first position
         wb._sheets.remove(ws_charts)
         wb._sheets.insert(0, ws_charts)
-
-            # Add the chart to a new worksheet
-            # new_sheet = wb.create_sheet(title="LCA Chart")
-            # new_sheet.add_chart(chart, "A1")
 
     # Save the workbook
     wb.save(filename)

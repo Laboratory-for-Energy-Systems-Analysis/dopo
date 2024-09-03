@@ -1,13 +1,13 @@
-# Dependencies
-# ------------
+"""
+Module for Managing Brightway2 Methods
 
-# brightway
+Provides functionality to filter and manage LCA methods in Brightway2. The `MethodFinder` class 
+enables users to search for methods based on criteria and manage them efficiently.
+"""
+
 import brightway2 as bw
 import bw2analyzer as ba
 import bw2data as bd
-
-# Class for generating method dictionary
-# --------------------------------------
 
 class MethodFinder:
     """
@@ -54,7 +54,8 @@ class MethodFinder:
         criteria : list of str
             A list of strings representing the inclusion criteria to filter the methods.
         exclude : list of str, optional
-            A list of strings representing the exclusion criteria to filter out certain methods (default is None).
+            A list of strings representing the exclusion criteria to filter out certain methods 
+            (default is None).
         custom_key : str, optional
             A custom key to use for storing the method in the dictionary. If not provided,
             a unique key is generated automatically (default is None).

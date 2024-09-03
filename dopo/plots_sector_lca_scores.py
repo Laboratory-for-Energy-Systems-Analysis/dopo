@@ -1,4 +1,10 @@
-# Excel file handling and chart creation
+"""
+This module processes Excel files to create dot plots and stacked bar charts using OpenPyXL. It 
+categorizes sheets by sector and generates charts for each sector, including scatter plots for LCA 
+scores and stacked bar charts for data contributions. Customizations include axis labels, titles, 
+and visual styles.
+"""
+
 from openpyxl import load_workbook
 from openpyxl.chart import ScatterChart, BarChart, Reference, Series
 
@@ -105,7 +111,8 @@ def dot_plots_xcl(filepath_workbook, column_positions):
                     break
 
             if not matching_key:
-                print(f"Warning: No matching key found for worksheet '{worksheet_name}'. Skipping...")
+                print(f"Warning: No matching key found for worksheet '{worksheet_name}'. 
+                      Skipping...")
                 continue
 
             # Retrieve the column positions from the index_positions dictionary
@@ -121,8 +128,10 @@ def dot_plots_xcl(filepath_workbook, column_positions):
             method_unit_col = positions.get("method unit", None) + 1
             
             # Ensure that all required columns are present
-            if None in [total_col, rank_col, mean_col, std_adv_col, std_blw_col, q1_col, q3_col, method_col, method_unit_col]:
-                print(f"Warning: Missing columns in worksheet '{worksheet_name}' for sector '{sector}'. Skipping...")
+            if None in [total_col, rank_col, mean_col, std_adv_col, std_blw_col, q1_col, q3_col, 
+                        method_col, method_unit_col]:
+                print(f"Warning: Missing columns in worksheet '{worksheet_name}' 
+                      for sector '{sector}'. Skipping...")
                 continue
             
             # Create a ScatterChart (or other chart type as needed)
@@ -292,7 +301,8 @@ def stacked_bars_xcl(filepath_workbook, column_positions, current_row_dot_plot):
                     break
 
             if not matching_key:
-                print(f"Warning: No matching key found for worksheet '{worksheet_name}'. Skipping...")
+                print(f"Warning: No matching key found for worksheet '{worksheet_name}'. 
+                      Skipping...")
                 continue
 
             # Retrieve the column positions from the index_positions dictionary
@@ -328,7 +338,8 @@ def stacked_bars_xcl(filepath_workbook, column_positions, current_row_dot_plot):
             chart.legend.overlay = False
 
             # Define data for the stacked bar chart
-            data = Reference(ws, min_col=input_min_col, min_row=1, max_row=max_row, max_col=max_column)
+            data = Reference(ws, min_col=input_min_col, min_row=1, max_row=max_row, 
+                             max_col=max_column)
             cats = Reference(ws, min_col=rank_col, min_row=2, max_row=max_row)
 
             chart.add_data(data, titles_from_data=True)

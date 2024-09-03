@@ -1,35 +1,51 @@
+"""
+Generates and saves Life Cycle Assessment (LCA) scores plots for various sectors to an Excel file.
+
+The module computes LCA scores for activities and methods, generates plots (dot plots and 
+stacked bar charts), and saves them along with LCA scores tables to an Excel file. 
+Includes helper functions for processing, plotting, and formatting data.
+"""
+
 import bw2analyzer as ba
 import pandas as pd
 import re
 
 def sector_lca_scores_plots(activity_dict, method_dict, excel_file_name, cutoff=0.01):
     """
-    Generate plots of Life Cycle Assessment (LCA) scores for different sectors and save them to an Excel file.
+    Generate plots of Life Cycle Assessment (LCA) scores for different sectors and save them to an 
+    Excel file.
 
-    This function calculates LCA scores for a set of activities and methods, then generates plots (dot plots 
-    and stacked bar charts) based on these scores. The generated plots are saved to an Excel file.
+    This function calculates LCA scores for a set of activities and methods, then generates plots 
+    (dot plots and stacked bar charts) based on these scores. The generated plots are saved to an 
+    Excel file.
 
     Args:
-        activity_dict (dict): A dictionary where keys are activity names or IDs and values are corresponding activity data.
-        method_dict (dict): A dictionary where keys are method names or IDs and values are corresponding method data.
-        excel_file_name (str): The name of the Excel file where the LCA scores tables and plots will be saved.
-        cutoff (float, optional): A cutoff value for filtering LCA scores. Any scores below this value will be excluded. 
-                                  Default is 0.01.
+        activity_dict (dict): A dictionary where keys are activity names or IDs and values are 
+                                corresponding activity data.
+        method_dict (dict): A dictionary where keys are method names or IDs and values are 
+                                corresponding method data.
+        excel_file_name (str): The name of the Excel file where the LCA scores tables and plots will 
+                                be saved.
+        cutoff (float, optional): A cutoff value for filtering LCA scores. Any scores below this 
+                                    value will be excluded. Default is 0.01.
 
     Returns:
         None
 
     The function performs the following steps:
-    1. Generates LCA scores tables based on the provided activity and method dictionaries and the cutoff value.
+    1. Generates LCA scores tables based on the provided activity and method dictionaries and the 
+        cutoff value.
     2. Saves the generated LCA scores tables to the specified Excel file.
     3. Creates dot plots of the LCA scores and saves them in the Excel file.
     4. Creates stacked bar charts of the LCA scores and appends them to the Excel file.
     5. Prints the last row occupied in the Excel charts sheet, which indicates where the plots end.
 
     Note:
-        - The `dot_plots_xcl` and `stacked_bars_xcl` functions are imported inside this function to avoid circular imports.
-        - The function relies on helper functions such as `sector_lca_scores` and `sector_lca_scores_to_excel` 
-          to generate and save LCA scores, and `dot_plots_xcl` and `stacked_bars_xcl` for generating plots.
+        - The `dot_plots_xcl` and `stacked_bars_xcl` functions are imported inside this function to 
+            avoid circular imports.
+        - The function relies on helper functions such as `sector_lca_scores` and 
+            `sector_lca_scores_to_excel` to generate and save LCA scores, and `dot_plots_xcl` and 
+            `stacked_bars_xcl` for generating plots.
     """
     from dopo.plots_sector_lca_scores import dot_plots_xcl, stacked_bars_xcl
    
@@ -43,26 +59,30 @@ def sector_lca_scores_plots(activity_dict, method_dict, excel_file_name, cutoff=
 
 def _sector_lca_scores(activity_dict, method_dict, cutoff=0.01):
     """
-    Generates LCA score tables for each sector's activity list, including total scores and CPC input contributions.
+    Generates LCA score tables for each sector's activity list, including total scores and CPC 
+    input contributions.
 
-    This function calculates LCA scores for activities within each sector using methods specified in the `method_dict`.
-    Inputs below or equal to the `cutoff` value are summarized in an "other" column.
+    This function calculates LCA scores for activities within each sector using methods specified 
+    in the `method_dict`. Inputs below or equal to the `cutoff` value are summarized in an "other" 
+    column.
 
     Parameters
     ----------
     activity_dict : dict
-        A dictionary returned by the `process_yaml_files` function. It should contain sector names as keys, 
-        each with an 'activities' entry holding the list of activities for that sector.
+        A dictionary returned by the `process_yaml_files` function. It should contain sector names 
+        as keys, each with an 'activities' entry holding the list of activities for that sector.
     method_dict : dict
-        A dictionary created with the `MethodFinder` class, containing methods for LCA score calculation.
+        A dictionary created with the `MethodFinder` class, containing methods for LCA score 
+        calculation.
     cutoff : float, optional
-        A threshold value for summarizing inputs below or equal to this value in an "other" column. Default is 0.02.
+        A threshold value for summarizing inputs below or equal to this value in an "other" column. 
+        Default is 0.02.
 
     Returns
     -------
     dict
-        The updated dictionary (formerly `activity_dict`) with an additional key 'lca_scores' for each sector.
-        This contains the calculated LCA scores by method.
+        The updated dictionary (formerly `activity_dict`) with an additional key 'lca_scores' 
+        for each sector. This contains the calculated LCA scores by method.
     """
     
     # Initialize scores_dict as a copy of main_dict
@@ -98,15 +118,18 @@ def _sector_lca_scores_to_excel(scores_dict, excel_file_name):
     - Shortens column labels by removing CPC codes.
     - Adds a sector name marker to facilitate tracking in Excel.
     - Adds statistical columns for plotting purposes.
-    - Creates a dictionary of column index positions used for plotting, making it dynamic and avoiding hardcoded column indices.
+    - Creates a dictionary of column index positions used for plotting, making it dynamic and 
+        avoiding hardcoded column indices.
 
     Parameters
     ----------
     scores_dict : dict
-        A dictionary where each key is a sector name and each value contains LCA scores and other relevant data. 
-        The structure should be compatible with the output of the `sector_lca_scores` function.
+        A dictionary where each key is a sector name and each value contains LCA scores and other 
+        relevant data. The structure should be compatible with the output of the `sector_lca_scores` 
+        function.
     excel_file_name : str
-        The name of the Excel file to be created, including the file extension (e.g., 'lca_scores.xlsx').
+        The name of the Excel file to be created, including the file extension 
+        (e.g., 'lca_scores.xlsx').
 
     Returns
     -------
@@ -138,8 +161,10 @@ def _sector_lca_scores_to_excel(scores_dict, excel_file_name):
             df = _add_statistics(df)
 
             # Get the index values of columns
-            columns_of_interest = ["total", "rank", "mean", "2std_abv", "2std_blw", "q1", "q3", "method", "method unit"]
-            positions = {col: df.columns.get_loc(col) for col in columns_of_interest if col in df.columns}
+            columns_of_interest = ["total", "rank", "mean", "2std_abv", "2std_blw", "q1", "q3", 
+                                   "method", "method unit"]
+            positions = {col: df.columns.get_loc(col) for col in columns_of_interest 
+                         if col in df.columns}
             column_positions[f"{sector}_{method}"] = positions
 
             # Find the first input column and add it to the positions dictionary
@@ -184,12 +209,13 @@ def _compare_activities_multiple_methods(
     activities_list, methods, identifier, output_format="pandas", mode="absolute"
 ):
     """
-    Compares a list of activities using multiple LCA methods and stores the results in a dictionary of DataFrames.
+    Compares a list of activities using multiple LCA methods and stores the results in a dictionary 
+    of DataFrames.
 
-    This function generates comparison results for each method in `methods`, formats them into DataFrames, 
-    and organizes them in a dictionary where the keys are method-specific names derived from the `identifier` 
-    and method details. Each DataFrame contains total scores and input contributions, with columns ordered and 
-    indexed appropriately.
+    This function generates comparison results for each method in `methods`, formats them into 
+    DataFrames, and organizes them in a dictionary where the keys are method-specific names derived 
+    from the `identifier` and method details. Each DataFrame contains total scores and input 
+    contributions, with columns ordered and indexed appropriately.
 
     Parameters
     ----------
@@ -199,9 +225,11 @@ def _compare_activities_multiple_methods(
         A dictionary where keys are method names and values are dictionaries with the key "object" 
         being a Brightway Method object used for comparisons.
     identifier : str
-        A string used to construct unique variable names for the comparison results (e.g., sector name).
+        A string used to construct unique variable names for the comparison results 
+        (e.g., sector name).
     output_format : str, optional
-        The format for the output DataFrame. Default is "pandas". Other formats can be specified if supported.
+        The format for the output DataFrame. Default is "pandas". Other formats can be specified 
+        if supported.
     mode : str, optional
         The mode of comparison. Options are "absolute" (default) and "relative".
 
@@ -213,7 +241,7 @@ def _compare_activities_multiple_methods(
     """
     dataframes_dict = {}
 
-    for method_key, method_details in methods.items(): #Note: though method_key is not called, it is necessary.
+    for method_key, method_details in methods.items(): # method_key is not called, but necessary
         # Perform the comparison using the Brightway2 analyzer
         result = ba.comparisons.compare_activities_by_grouped_leaves(
             activities_list,
@@ -247,27 +275,30 @@ def _compare_activities_multiple_methods(
 
 def _small_inputs_to_other_column(dataframes_dict, cutoff=0.01):
     """
-    Aggregates insignificant input contributions into an 'other' column for each DataFrame in the input dictionary.
+    Aggregates insignificant input contributions into an 'other' column for each DataFrame in the 
+    input dictionary.
     
-    Contributions that are less than or equal to the specified cutoff value (relative to the 'total' column) 
-    are combined into a new 'other' column. The original columns with these contributions are set to zero.
-    Columns that end up containing only zeros are removed, and columns named None or "Unnamed" are also 
-    combined into the 'other' column before removal.
+    Contributions that are less than or equal to the specified cutoff value (relative to the 'total'
+    column) are combined into a new 'other' column. The original columns with these contributions 
+    are set to zero. Columns that end up containing only zeros are removed, and columns named None 
+    or "Unnamed" are also combined into the 'other' column before removal.
 
     Parameters
     ----------
     dataframes_dict : dict
-        A dictionary where each key corresponds to a DataFrame. Each DataFrame should contain a 'total' column 
-        and may include columns to be aggregated into the 'other' column based on their contributions.
+        A dictionary where each key corresponds to a DataFrame. Each DataFrame should contain a 
+        'total' column and may include columns to be aggregated into the 'other' column based on 
+        their contributions.
     cutoff : float, optional
-        The cutoff value for determining insignificant contributions. Contributions less than or equal to this 
-        value (relative to the 'total' column) are aggregated into the 'other' column. Default is 0.01.
+        The cutoff value for determining insignificant contributions. Contributions less than or 
+        equal to this value (relative to the 'total' column) are aggregated into the 'other' column. 
+        Default is 0.01.
 
     Returns
     -------
     dict
-        A dictionary with the same keys as `dataframes_dict`, but with each DataFrame updated to include an 
-        'other' column and without insignificant columns.
+        A dictionary with the same keys as `dataframes_dict`, but with each DataFrame updated to 
+        include an 'other' column and without insignificant columns.
     """
     
     processed_dict = {}
@@ -307,7 +338,8 @@ def _small_inputs_to_other_column(dataframes_dict, cutoff=0.01):
                                             (numeric_cols[col] < numeric_cols['total'] * (-cutoff)))
             
             # Apply the logic for both positive and negative totals
-            numeric_cols.loc[mask_pos | mask_neg, 'other'] += numeric_cols.loc[mask_pos | mask_neg, col]
+            numeric_cols.loc[mask_pos | mask_neg, 'other'] += numeric_cols.loc[mask_pos | 
+                                                                               mask_neg, col]
             numeric_cols.loc[mask_pos | mask_neg, col] = 0
 
             # Add these values to 'other'
@@ -340,9 +372,9 @@ def _add_statistics(df, column_name='total'):
     """
     Adds statistical indicators to a DataFrame for plotting purposes.
 
-    This function computes several statistics based on the values in the specified column (`column_name`). 
-    It adds columns for ranking, mean, standard deviation bounds, and interquartile range (IQR). 
-    The statistics are added to aid in visual analysis and plotting.
+    This function computes several statistics based on the values in the specified column 
+    (`column_name`). It adds columns for ranking, mean, standard deviation bounds, 
+    and interquartile range (IQR). The statistics are added to aid in visual analysis and plotting.
 
     Parameters
     ----------
@@ -354,7 +386,8 @@ def _add_statistics(df, column_name='total'):
     Returns
     -------
     pandas.DataFrame
-        The updated DataFrame with added columns for ranking, mean, standard deviation bounds, and IQR.
+        The updated DataFrame with added columns for ranking, mean, standard deviation bounds, 
+        and IQR.
     """
     
     # Add a rank column based on the specified column
@@ -380,8 +413,9 @@ def _find_first_input_column(df):
     Identifies the index of the first column in a DataFrame that contains input contribution data.
 
     This function is used to locate the column in the DataFrame that holds input contribution data,
-    which is essential for dynamically selecting the correct column for plotting. It ensures compatibility 
-    with DataFrames that may have different column orders or names, such as those including "direct emissions."
+    which is essential for dynamically selecting the correct column for plotting. 
+    It ensures compatibility with DataFrames that may have different column orders or names, such as
+    those including "direct emissions."
 
     Parameters
     ----------
@@ -391,7 +425,8 @@ def _find_first_input_column(df):
     Returns
     -------
     int or None
-        The index of the first column containing input data. Returns `None` if no such column is found.
+        The index of the first column containing input data. Returns `None` if no such column 
+        is found.
     """
     
     def _clean_label(label):
@@ -413,9 +448,9 @@ def _clean_column_labels(df):
     """
     Cleans and formats column labels in the DataFrame by removing unnecessary numbers and colons.
 
-    This function is used to standardize column headers by removing leading numbers and colons, which can
-    be present in columns used for input contributions or other data. It should be called after `_find_first_input_column`
-    to ensure column order and identification are correctly handled.
+    This function is used to standardize column headers by removing leading numbers and colons, 
+    which can be present in columns used for input contributions or other data. It should be called 
+    after `_find_first_input_column` to ensure column order and identification are correctly handled.
 
     Parameters
     ----------
@@ -425,7 +460,8 @@ def _clean_column_labels(df):
     Returns
     -------
     pandas.DataFrame
-        The DataFrame with formatted column labels, where unnecessary numbers and colons have been removed.
+        The DataFrame with formatted column labels, where unnecessary numbers and colons have 
+        been removed.
     """
     
     # Function to remove numbers and colon from column names
@@ -443,9 +479,10 @@ def _add_sector_marker(df, sector):
     """
     Adds a sector marker to the DataFrame for labeling and identification purposes.
 
-    This function is used to add a new column to the DataFrame that indicates the sector associated with the data.
-    The sector information is useful for identifying and labeling data in plots and Excel sheets. The column is 
-    positioned immediately after the 'product' column if it exists, or appended at the end if 'product' is not present.
+    This function is used to add a new column to the DataFrame that indicates the sector associated 
+    with the data. The sector information is useful for identifying and labeling data in plots and 
+    Excel sheets. The column is positioned immediately after the 'product' column if it exists, or 
+    appended at the end if 'product' is not present.
 
     Parameters
     ----------
@@ -458,7 +495,8 @@ def _add_sector_marker(df, sector):
     Returns
     -------
     pandas.DataFrame
-        The DataFrame with an added 'sector' column, positioned immediately after the 'product' column if present,
+        The DataFrame with an added 'sector' column, positioned immediately after the 'product' 
+        column if present,
         or at the end otherwise.
     """
     

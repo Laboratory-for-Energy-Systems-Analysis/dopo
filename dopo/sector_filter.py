@@ -1,12 +1,20 @@
+"""
+This module processes YAML files to filter activities based on criteria and updates a dictionary 
+with filtered activities from a given database. It utilizes filters defined in YAML files and 
+returns an updated dictionary containing filtered activities for each sector.
+"""
+
 from dopo import generate_sets_from_filters
 import copy
 
 def process_yaml_files(files_dict, database):
     """
-    Processes YAML files to filter activities based on defined criteria and updates a dictionary with the filtered activities.
+    Processes YAML files to filter activities based on defined criteria and updates a dictionary 
+    with the filtered activities.
 
-    This function iterates through a dictionary of YAML file paths and identifiers, applies filters defined in the YAML files
-    to a given database, and updates the dictionary with the filtered activities for each sector.
+    This function iterates through a dictionary of YAML file paths and identifiers, applies filters 
+    defined in the YAML files to a given database, and updates the dictionary with the filtered 
+    activities for each sector.
 
     Parameters
     ----------
@@ -22,7 +30,8 @@ def process_yaml_files(files_dict, database):
     Returns
     -------
     dict
-        The updated dictionary with an additional key 'activities' for each sector, which contains a list of filtered activities.
+        The updated dictionary with an additional key 'activities' for each sector, which contains 
+        a list of filtered activities.
     """
     
     # Create a deep copy of the input dictionary to avoid modifying the original
