@@ -1,21 +1,27 @@
-
-import brightway2 as bw
-import bw2data as bd
-import bw2analyzer as ba
-
-# Data manipulation and plotting
-import pandas as pd
-import ast
-import matplotlib.pyplot as plt
-import seaborn as sns
-
 # Excel file handling and chart creation
 from openpyxl import load_workbook
 from openpyxl.chart import ScatterChart, BarChart, Reference, Series
 
-
-
 def _categorize_sheets_by_sector(file_path):
+    """
+    Categorizes the sheets in an Excel workbook by sector.
+
+    This function reads an Excel workbook and categorizes the sheets based on 
+    the sector, assuming that the sector name is the first part of the sheet 
+    name separated by an underscore ('_'). Sheets without an underscore in their 
+    name are skipped.
+
+    Parameters
+    ----------
+    file_path : str
+        Path to the Excel workbook file.
+
+    Returns
+    -------
+    dict
+        A dictionary where the keys are sector names and the values are lists of 
+        sheet names corresponding to that sector.
+    """
     # Load the workbook
     workbook = load_workbook(filename=file_path, read_only=True)
     
@@ -39,10 +45,27 @@ def _categorize_sheets_by_sector(file_path):
     
     return worksheet_dict
 
+def dot_plots_xcl(filepath_workbook, column_positions):
+    """
+    Creates dot plots for each sector in an Excel workbook.
 
+    This function reads an Excel workbook, categorizes sheets by sector, and creates 
+    scatter charts (dot plots) for data visualization based on the input data in the 
+    worksheets. It saves the generated charts in a new sheet within the workbook.
 
-def dot_plots_xcl(filepath_workbook, index_positions):
+    Parameters
+    ----------
+    filepath_workbook : str
+        Path to the Excel workbook file.
+    index_positions : dict
+        A dictionary containing column index positions for the data required to create 
+        the charts for each worksheet.
 
+    Returns
+    -------
+    int
+        The row position where the last chart was placed.
+    """
     worksheet_dict = _categorize_sheets_by_sector(filepath_workbook)
     
     # Load the workbook
@@ -63,7 +86,7 @@ def dot_plots_xcl(filepath_workbook, index_positions):
         current_col = 1  # Start placing charts from column 1
         chart_height = 30  # Number of rows a chart occupies
         chart_width = 12   # Number of columns a chart occupies
-        charts_per_row = 2  # Number of charts per row
+        charts_per_row = 3  # Number of charts per row
         
         # Iterate over each worksheet name in the current sector
         for i, worksheet_name in enumerate(worksheet_names):
@@ -76,7 +99,7 @@ def dot_plots_xcl(filepath_workbook, index_positions):
 
             # Find the key in index_positions that contains worksheet_name
             matching_key = None
-            for key in index_positions.keys():
+            for key in column_positions.keys():
                 if worksheet_name in key:
                     matching_key = key
                     break
@@ -86,7 +109,7 @@ def dot_plots_xcl(filepath_workbook, index_positions):
                 continue
 
             # Retrieve the column positions from the index_positions dictionary
-            positions = index_positions[matching_key]
+            positions = column_positions[matching_key]
             total_col = positions.get("total", None) + 1
             rank_col = positions.get("rank", None) + 1
             mean_col = positions.get("mean", None) + 1
@@ -131,31 +154,31 @@ def dot_plots_xcl(filepath_workbook, index_positions):
             series.marker.size = 5
             series.graphicalProperties.line.noFill = True
 
-            # ADJUST X-AXIS
+            # Adjust X-axis properties
             chart.x_axis.tickLblPos = "low"
             chart.x_axis.majorGridlines = None 
-            chart.x_axis.tickMarkSkip = 1  # Show all tick marks, this adresses the tick lines 
-            chart.x_axis.tickLblSkip = 1  # Show all labels, doesnt work
+            chart.x_axis.tickMarkSkip = 1  # Show all tick marks
+            chart.x_axis.tickLblSkip = 1  # Show all labels
 
             chart.x_axis.scaling.orientation = "minMax"
             chart.x_axis.crosses = "autoZero"
             chart.x_axis.axPos = "b"
             chart.x_axis.delete = False
 
-            # ADJUST Y-AXIS
+            # Adjust Y-axis properties
             chart.y_axis.tickLblPos = "nextTo"  # Position the labels next to the tick marks
             chart.y_axis.delete = False  # Ensure axis is not deleted
             chart.y_axis.number_format = '0.00000'
             chart.y_axis.majorGridlines = None 
 
-            # ADD STATS
+            # Add statistics: mean, IQR, and standard deviation lines to the chart
             # MEAN
             mean_y = Reference(ws, min_col=mean_col, min_row=min_row, max_row=max_row)
             mean_series = Series(mean_y, x_values, title_from_data="True")
             chart.series.append(mean_series)
             mean_series.marker.symbol = "none"  # No markers, just a line
             mean_series.graphicalProperties.line.solidFill = "FF0000"  # Red line for mean value
-            mean_series.graphicalProperties.line.width = 10000  # Set line width (default units are EMUs)
+            mean_series.graphicalProperties.line.width = 10000  # Set line width
 
             # IQR
             iqr1 = Reference(ws, min_col=q1_col, min_row=min_row, max_row=max_row)
@@ -168,8 +191,8 @@ def dot_plots_xcl(filepath_workbook, index_positions):
             iqr3_series.marker.symbol = "none"
             iqr1_series.graphicalProperties.line.solidFill = "6082B6"  # Blue line 
             iqr3_series.graphicalProperties.line.solidFill = "6082B6"  
-            iqr1_series.graphicalProperties.line.width = 10000  # Set line width (default units are EMUs)
-            iqr3_series.graphicalProperties.line.width = 10000  # Set line width (default units are EMUs)
+            iqr1_series.graphicalProperties.line.width = 10000  # Set line width
+            iqr3_series.graphicalProperties.line.width = 10000  # Set line width
 
             # STD
             std_abv = Reference(ws, min_col=std_adv_col, min_row=min_row, max_row=max_row)
@@ -180,10 +203,10 @@ def dot_plots_xcl(filepath_workbook, index_positions):
             chart.series.append(std_blw_series)
             std_abv_series.marker.symbol = "none"  # No markers, just a line
             std_blw_series.marker.symbol = "none"
-            std_abv_series.graphicalProperties.line.solidFill = "FFC300"  # yellow line
-            std_blw_series.graphicalProperties.line.solidFill = "FFC300"  
-            std_abv_series.graphicalProperties.line.width = 10000  # Set line width (default units are EMUs)
-            std_blw_series.graphicalProperties.line.width = 10000  # Set line width (default units are EMUs)
+            std_abv_series.graphicalProperties.line.solidFill = "FFAA1D"  # Orange line
+            std_blw_series.graphicalProperties.line.solidFill = "FFAA1D"  
+            std_abv_series.graphicalProperties.line.width = 10000  # Set line width
+            std_blw_series.graphicalProperties.line.width = 10000  # Set line width
 
             # Set legend position to the right of the plot area
             chart.legend.position = 'r'  # 'r' for right
@@ -210,13 +233,33 @@ def dot_plots_xcl(filepath_workbook, index_positions):
     wb.save(filepath_workbook)
     return current_row
 
+def stacked_bars_xcl(filepath_workbook, column_positions, current_row_dot_plot):
+    """
+    Creates stacked bar charts for each sector in an Excel workbook.
 
-from openpyxl import load_workbook
-from openpyxl.chart import BarChart, Reference
+    This function reads an Excel workbook, categorizes sheets by sector, and creates 
+    stacked bar charts to visualize data contributions. The generated charts are added 
+    to a new or existing sheet within the workbook.
 
-def stacked_bars_xcl(filepath_workbook, index_positions, current_row_dot_plot):
+    Parameters
+    ----------
+    filepath_workbook : str
+        Path to the Excel workbook file.
+    index_positions : dict
+        A dictionary containing column index positions for the data required to create 
+        the charts for each worksheet.
+    current_row_dot_plot : int
+        The row number in the chart sheet where the dot plots ended, used to determine 
+        the starting row for the stacked bar charts.
 
+    Returns
+    -------
+    int
+        The row position where the last chart was placed.
+    """
+    # Categorize sheets by sector
     worksheet_dict = _categorize_sheets_by_sector(filepath_workbook)
+    
     # Load the workbook
     wb = load_workbook(filepath_workbook)
     
@@ -233,9 +276,9 @@ def stacked_bars_xcl(filepath_workbook, index_positions, current_row_dot_plot):
         # Initial position for the first chart
         chart_height = 30  # Number of rows a chart occupies
         chart_width = 12   # Number of columns a chart occupies
-        current_row = current_row_dot_plot + chart_height # Start placing charts from row where dot plots have left of
+        current_row = current_row_dot_plot + chart_height  # Start placing charts from row after dot plots
         current_col = 1  # Start placing charts from column 1
-        charts_per_row = 2  # Number of charts per row
+        charts_per_row = 3  # Number of charts per row
         
         # Iterate over each worksheet name in the current sector
         for i, worksheet_name in enumerate(worksheet_names):
@@ -243,7 +286,7 @@ def stacked_bars_xcl(filepath_workbook, index_positions, current_row_dot_plot):
 
             # Find the key in index_positions that contains worksheet_name
             matching_key = None
-            for key in index_positions.keys():
+            for key in column_positions.keys():
                 if worksheet_name in key:
                     matching_key = key
                     break
@@ -253,9 +296,9 @@ def stacked_bars_xcl(filepath_workbook, index_positions, current_row_dot_plot):
                 continue
 
             # Retrieve the column positions from the index_positions dictionary
-            positions = index_positions[matching_key]
+            positions = column_positions[matching_key]
 
-            # Find min_row, max_row and max_column
+            # Find min_row, max_row, and max_column
             max_row = ws.max_row
             max_column = ws.max_column
             input_min_col = positions.get("first_input", None) + 1
@@ -263,6 +306,7 @@ def stacked_bars_xcl(filepath_workbook, index_positions, current_row_dot_plot):
             method_col = positions.get("method", None) + 1
             method_unit_col = positions.get("method unit", None) + 1
 
+            # Create a BarChart object for the stacked bar chart
             chart = BarChart()
             chart.type = "bar"
             chart.style = 2
@@ -275,7 +319,6 @@ def stacked_bars_xcl(filepath_workbook, index_positions, current_row_dot_plot):
 
             method_unit_value = ws.cell(row=2, column=method_unit_col).value
             chart.y_axis.title = f"{method_unit_value}"
-            
             chart.x_axis.title = 'activity rank'
 
             # Avoid overlap
@@ -284,7 +327,7 @@ def stacked_bars_xcl(filepath_workbook, index_positions, current_row_dot_plot):
             chart.y_axis.title.overlay = False 
             chart.legend.overlay = False
 
-            # Define data
+            # Define data for the stacked bar chart
             data = Reference(ws, min_col=input_min_col, min_row=1, max_row=max_row, max_col=max_column)
             cats = Reference(ws, min_col=rank_col, min_row=2, max_row=max_row)
 
@@ -311,14 +354,16 @@ def stacked_bars_xcl(filepath_workbook, index_positions, current_row_dot_plot):
             ws_charts.add_chart(chart, position)
             
             # Update position for the next chart
-            current_col += chart_width +1
+            current_col += chart_width + 1
             if (i + 1) % charts_per_row == 0:  # Move to the next row after placing `charts_per_row` charts
-                current_row += chart_height +1
+                current_row += chart_height + 1
                 current_col = 1  # Reset to the first column
 
         # Move the chart sheet to the first position
         wb._sheets.remove(ws_charts)
         wb._sheets.insert(0, ws_charts)
         
+    # Save the workbook with the charts added
     wb.save(filepath_workbook)
+    
     return current_row
