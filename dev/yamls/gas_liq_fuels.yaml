@@ -1,0 +1,20 @@
+Liquid fuels:
+  ecoinvent_aliases:
+    fltr:
+      name: 
+        - heavy fuel oil production
+
+    mask:
+      location:
+        - RoW
+        - Europe without Switzerland
+
+Gaseous fuels:
+
+
+
+
+
+
+
+

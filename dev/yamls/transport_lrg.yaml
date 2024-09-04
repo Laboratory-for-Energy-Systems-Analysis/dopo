@@ -1,0 +1,36 @@
+Freight transport:
+  ecoinvent_aliases:
+    fltr:
+      name: transport
+      unit: ton kilometer
+    mask:
+      name:
+        - market
+        - pipeline
+      reference product: tractor and trailer
+
+Passenger transport (person kilometer):
+  ecoinvent_aliases:
+    fltr:
+      name: transport
+      unit: person kilometer
+    mask:
+      name: market
+
+Passenger transport (kilometer):
+  ecoinvent_aliases:
+    fltr:
+      name: transport
+    masK:
+      name: market
+      unit:
+        - person
+        - ton
+
+
+
+
+
+
+
+

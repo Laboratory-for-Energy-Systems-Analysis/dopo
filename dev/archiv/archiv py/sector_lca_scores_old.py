@@ -6,12 +6,7 @@ stacked bar charts), and saves them along with LCA scores tables to an Excel fil
 Includes helper functions for processing, plotting, and formatting data.
 """
 
-from os.path import commonprefix
 import bw2analyzer as ba
-import bw2calc as bc
-import bw2data as bd
-import operator
-import tabulate
 import pandas as pd
 import re
 
@@ -248,7 +243,7 @@ def _compare_activities_multiple_methods(
 
     for method_key, method_details in methods.items(): # method_key is not called, but necessary
         # Perform the comparison using the Brightway2 analyzer
-        result = _compare_activities_by_grouped_leaves(
+        result = ba.comparisons.compare_activities_by_grouped_leaves(
             activities_list,
             method_details["object"].name,
             output_format=output_format,
@@ -523,119 +518,3 @@ def _add_sector_marker(df, sector):
     df = df[columns]
     
     return df
-
-def _compare_activities_by_grouped_leaves(
-    activities,
-    lcia_method,
-    mode="relative",
-    max_level=4,
-    cutoff=7.5e-3,
-    output_format="list",
-    str_length=50,
-):
-    """
-    Adapted birghtway2 analyzer function. It stores additional labels and data per activity.
-
-    Compare activities by the impact of their different inputs, aggregated by the product classification of those inputs.
-
-    Args:
-        activities: list of ``Activity`` instances.
-        lcia_method: tuple. LCIA method to use when traversing supply chain graph.
-        mode: str. If "relative" (default), results are returned as a fraction of total input. Otherwise, results are absolute impact per input exchange.
-        max_level: int. Maximum level in supply chain to examine.
-        cutoff: float. Fraction of total impact to cutoff supply chain graph traversal at.
-        output_format: str. See below.
-        str_length; int. If ``output_format`` is ``html``, this controls how many characters each column label can have.
-
-    Raises:
-        ValueError: ``activities`` is malformed.
-
-    Returns:
-        Depends on ``output_format``:
-
-        * ``list``: Tuple of ``(column labels, data)``
-        * ``html``: HTML string that will print nicely in Jupyter notebooks.
-        * ``pandas``: a pandas ``DataFrame``.
-
-    """
-    for act in activities:
-        if not isinstance(act, bd.backends.peewee.proxies.Activity):
-            raise ValueError("`activities` must be an iterable of `Activity` instances")
-
-    objs = [
-        ba.comparisons.group_leaves(ba.comparisons.find_leaves(act, lcia_method, max_level=max_level, cutoff=cutoff))
-        for act in activities
-    ]
-    sorted_keys = sorted(
-        [
-            (max([el[0] for obj in objs for el in obj if el[2] == key]), key)
-            for key in {el[2] for obj in objs for el in obj}
-        ],
-        reverse=True,
-    )
-    name_common = commonprefix([act["name"] for act in activities])
-
-    if " " not in name_common:
-        name_common = ""
-    else:
-        last_space = len(name_common) - operator.indexOf(reversed(name_common), " ")
-        name_common = name_common[:last_space]
-        print("Omitting activity name common prefix: '{}'".format(name_common))
-
-    product_common = commonprefix(
-        [act.get("reference product", "") for act in activities]
-    )
-
-    lca = bc.LCA({act: 1 for act in activities}, lcia_method)
-    lca.lci()
-    lca.lcia()
-
-    labels = [
-        "activity",
-        "activity key",
-        "product",
-        "location",
-        "unit",
-        "total",
-        "direct emissions",
-    ] + [key for _, key in sorted_keys]
-    data = []
-    for act, lst in zip(activities, objs):
-        lca.redo_lcia({act: 1})
-        data.append(
-            [
-                act["name"].replace(name_common, ""),
-                act.key,
-                act.get("reference product", "").replace(product_common, ""),
-                act.get("location", "")[:25],
-                act.get("unit", ""),
-                lca.score,
-            ]
-            + [
-                (
-                    lca.characterization_matrix
-                    * lca.biosphere_matrix
-                    * lca.demand_array
-                ).sum()
-            ]
-            + [ba.comparisons.get_value_for_cpc(lst, key) for _, key in sorted_keys]
-        )
-
-    data.sort(key=lambda x: x[4], reverse=True)
-
-    if mode == "relative":
-        for row in data:
-            for index, point in enumerate(row[5:]):
-                row[index + 5] = point / row[4]
-
-    if output_format == "list":
-        return labels, data
-    elif output_format == "pandas":
-        return pd.DataFrame(data, columns=labels)
-    elif output_format == "html":
-        return tabulate.tabulate(
-            data,
-            [x[:str_length] for x in labels],
-            tablefmt="html",
-            floatfmt=".3f",
-        )

@@ -338,7 +338,16 @@ def _barchart_compare_db_xcl(filename, index_positions, current_row_stacked_bar)
             chart.y_axis.tickLblPos = "low"
 
             # X-axis (values) settings
-            chart.x_axis.majorGridlines = None
+            chart.x_axis.tickLblPos = "high" 
+            chart.x_axis.majorGridlines = None 
+            chart.x_axis.tickMarkSkip = 1  # Show all tick marks
+            chart.x_axis.tickLblSkip = 1  # Show all labels
+
+            chart.x_axis.scaling.orientation = "minMax"
+            chart.x_axis.crosses = "autoZero"
+            chart.x_axis.axPos = "b"
+            chart.x_axis.delete = False
+
 
             # Chart titles
             method_value = ws.cell(row=2, column=method_col).value

@@ -18,4 +18,3 @@ from dopo.methods import MethodFinder
 from dopo.sector_lca_scores import (sector_lca_scores_plots)
 from dopo.database_comparison import (database_comparison_plots)
 
-

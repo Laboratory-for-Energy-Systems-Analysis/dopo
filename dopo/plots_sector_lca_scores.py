@@ -111,8 +111,7 @@ def dot_plots_xcl(filepath_workbook, column_positions):
                     break
 
             if not matching_key:
-                print(f"Warning: No matching key found for worksheet '{worksheet_name}'. 
-                      Skipping...")
+                print(f"Warning: No matching key found for worksheet '{worksheet_name}'. Skipping...")
                 continue
 
             # Retrieve the column positions from the index_positions dictionary
@@ -130,8 +129,7 @@ def dot_plots_xcl(filepath_workbook, column_positions):
             # Ensure that all required columns are present
             if None in [total_col, rank_col, mean_col, std_adv_col, std_blw_col, q1_col, q3_col, 
                         method_col, method_unit_col]:
-                print(f"Warning: Missing columns in worksheet '{worksheet_name}' 
-                      for sector '{sector}'. Skipping...")
+                print(f"Warning: Missing columns in worksheet '{worksheet_name}' for sector '{sector}'. Skipping...")
                 continue
             
             # Create a ScatterChart (or other chart type as needed)
@@ -301,8 +299,7 @@ def stacked_bars_xcl(filepath_workbook, column_positions, current_row_dot_plot):
                     break
 
             if not matching_key:
-                print(f"Warning: No matching key found for worksheet '{worksheet_name}'. 
-                      Skipping...")
+                print(f"Warning: No matching key found for worksheet '{worksheet_name}'. Skipping...")
                 continue
 
             # Retrieve the column positions from the index_positions dictionary
@@ -325,7 +322,7 @@ def stacked_bars_xcl(filepath_workbook, column_positions, current_row_dot_plot):
 
             # Chart titles
             method_value = ws.cell(row=2, column=method_col).value
-            chart.title = f"{sector} sector inputs contributions to {method_value}"
+            chart.title = f"Inputs contributions to {method_value} LCA score for sector {sector}"
 
             method_unit_value = ws.cell(row=2, column=method_unit_col).value
             chart.y_axis.title = f"{method_unit_value}"
@@ -354,6 +351,17 @@ def stacked_bars_xcl(filepath_workbook, column_positions, current_row_dot_plot):
             chart.y_axis.tickLblPos = "nextTo"
             chart.y_axis.delete = False  # Ensure axis is not deleted
             chart.y_axis.number_format = '0.000'
+
+            # Adjust X-axis properties
+            chart.x_axis.tickLblPos = "low" 
+            chart.x_axis.majorGridlines = None 
+            chart.x_axis.tickMarkSkip = 1  # Show all tick marks
+            chart.x_axis.tickLblSkip = 1  # Show all labels
+
+            chart.x_axis.scaling.orientation = "minMax"
+            chart.x_axis.crosses = "autoZero"
+            chart.x_axis.axPos = "b"
+            chart.x_axis.delete = False
 
             # Adjust chart dimensions
             chart.width = 20  # Width of the chart

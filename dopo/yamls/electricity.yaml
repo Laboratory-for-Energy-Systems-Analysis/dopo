@@ -22,6 +22,8 @@ Electricity production fossil:
         - refinery operation
         - compressed air
         - aluminium industry
+        - cobalt
+
 
 Electricity production renewables:
  ecoinvent_aliases:
@@ -38,6 +40,8 @@ Electricity production renewables:
       - Evolutionary
       - Reactor
       - petroleum
+      - cobalt
+      - peat
 
 Electricity production nuclear:
  ecoinvent_aliases:
@@ -63,6 +67,8 @@ Electricity production nuclear:
       - compressed air
       - aluminium industry
       - peat
+      - cobalt
+      - Swiss
 
 Electricity production biomass:
  ecoinvent_aliases:
