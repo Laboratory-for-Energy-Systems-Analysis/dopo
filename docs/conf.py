@@ -8,8 +8,8 @@ import datetime
 
 ### project information ###########################################################################
 
-project = "premise_validation"
-author = "Brightway Developers"
+project = "dopo"
+author = "Caroline Friedberger"
 copyright = datetime.date.today().strftime("%Y") + ' Brightway Developers'
 
 ### project configuration #########################################################################
