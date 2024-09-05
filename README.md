@@ -64,22 +64,6 @@ please [file an issue][Issue Tracker] along with a detailed description.
 [Issue Tracker]: https://github.com/cafriedb/premise_validation/issues
 
 
-## Building the Documentation
+## Support
 
-You can build the documentation locally by installing the documentation Conda environment:
-
-```bash
-conda env create -f docs/environment.yml
-```
-
-activating the environment
-
-```bash
-conda activate sphinx_premise_validation
-```
-
-and [running the build command](https://www.sphinx-doc.org/en/master/man/sphinx-build.html#sphinx-build):
-
-```bash
-sphinx-build docs _build/html --builder=html --jobs=auto --write-all; open _build/html/index.html
-```
+Feel free to contact cafriedb@stud.ntnu.no
