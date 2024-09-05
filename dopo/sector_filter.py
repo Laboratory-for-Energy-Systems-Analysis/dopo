@@ -9,7 +9,7 @@ added to generated excel tables to compare relevance of activities over the whol
 """
 
 from dopo import generate_sets_from_filters
-import cop<y
+import copy
 import numpy as np 
 
 def process_yaml_files(files_dict, database):
