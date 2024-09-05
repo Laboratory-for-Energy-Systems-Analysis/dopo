@@ -1,4 +1,4 @@
-# premise_validation
+# dopo for premise validation
 
 [![PyPI](https://img.shields.io/pypi/v/premise_validation.svg)][pypi status]
 [![Status](https://img.shields.io/pypi/status/premise_validation.svg)][pypi status]
