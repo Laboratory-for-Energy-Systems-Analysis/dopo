@@ -28,6 +28,10 @@ The goal of ``dopo`` is to streamline the outlier detection process, allowing us
 
 Besides, ``dopo`` can also be used adaptively for visualizing a whole database not filtered by sector and to assess any other database used in brightway.
 
+## Documentation
+
+https://dopo.readthedocs.io/en/latest/
+
 ## Installation
 
 You can install _dopo_ via [pip] from [PyPI]:
