@@ -54,8 +54,8 @@ def process_yaml_files(files_dict, database):
         
         # Debug: print the activities for the current sector
         # print(f"Activities for {key}:")
-        for activity in sector_activities[yaml_identifier]:
-            # print(f"  {activity.key}")
+        # for activity in sector_activities[yaml_identifier]:
+        #     print(f"  {activity.key}")
 
         # Convert the set of activities to a list
         activities_list = list(sector_activities[yaml_identifier])
