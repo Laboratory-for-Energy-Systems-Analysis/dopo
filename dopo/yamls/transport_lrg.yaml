@@ -27,6 +27,15 @@ Passenger transport (kilometer):
         - person
         - ton
 
+Passenger transport (all):
+  ecoinvent_aliases:
+    fltr:
+      name: transport
+    masK:
+      name: market
+      unit:
+        - ton
+
 
 
 
