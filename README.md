@@ -1,4 +1,4 @@
-# dopo for premise validation
+## Detecting Outliers in Premise Operations (dopo)
 
 [![PyPI](https://img.shields.io/pypi/v/premise_validation.svg)][pypi status]
 [![Status](https://img.shields.io/pypi/status/premise_validation.svg)][pypi status]
@@ -19,7 +19,6 @@
 [pre-commit]: https://github.com/pre-commit/pre-commit
 [black]: https://github.com/psf/black
 
-## Detecting Outliers in Premise Operations (dopo)
 ## About dopo
 The **Premise Validation Project** introduces the Python package **"dopo"** (short for Detecting Outliers in Premise Operations). This package provides an outlier detection framework specifically designed for premise-based prospective Life Cycle Assessment (LCA) databases.
 
