@@ -19,7 +19,7 @@
 [pre-commit]: https://github.com/pre-commit/pre-commit
 [black]: https://github.com/psf/black
 
-## About the Project
+## About Detecting Outliers in Premise Operations (dopo)
 The **Premise Validation Project** introduces the Python package **"dopo"** (short for Detecting Outliers in Premise Operations). This package provides an outlier detection framework specifically designed for premise-based prospective Life Cycle Assessment (LCA) databases.
 
 **dopo** visualizes premise databases by sector and compares them to the initial ecoinvent database. It currently generates three types of plots that present data at varying levels of granularity, along with tables containing detailed information. The visualizations are outputted as Excel workbooks, making it easier for users to analyze and interpret the results.
