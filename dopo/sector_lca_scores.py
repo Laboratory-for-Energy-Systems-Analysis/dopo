@@ -59,8 +59,7 @@ def sector_lca_scores_plots(activity_dict, method_dict, excel_file_name, cutoff=
     current_row=dot_plots_xcl(excel_file_name, column_positions)
     current_row=stacked_bars_xcl(excel_file_name, column_positions, current_row)
     
-    print("last row occupied in excel charts sheet")
-    print(current_row)
+    print(f"last row occupied in excel charts sheet: {current_row} --> use as current_row argument")
 
 def _sector_lca_scores(activity_dict, method_dict, cutoff=0.01):
     """
@@ -186,8 +185,8 @@ def _sector_lca_scores_to_excel(scores_dict, excel_file_name):
             #
             # method_dfs.append((f"{sector}_{method}", df))
             method_dfs.append((f"{method}", df))
-            print('key in method_dfs')
-            print(method)
+            # print('key in method_dfs')
+            # print(method)
 
         # Combine all dataframes for this sector
         combined_df = pd.concat(sector_dfs, axis=0, ignore_index=True, sort=False).fillna(0)
@@ -580,7 +579,7 @@ def _compare_activities_by_grouped_leaves(
     else:
         last_space = len(name_common) - operator.indexOf(reversed(name_common), " ")
         name_common = name_common[:last_space]
-        print("Omitting activity name common prefix: '{}'".format(name_common))
+        # print("Omitting activity name common prefix: '{}'".format(name_common))
 
     product_common = commonprefix(
         [act.get("reference product", "") for act in activities]

@@ -42,15 +42,15 @@ def process_yaml_files(files_dict, database):
         yaml_identifier = value['yaml identifier']
         
         # Debug: print the current processing status
-        print(f"Processing {key} with database {database.name}")
+        # print(f"Processing {key} with database {database.name}")
         
         # Generate the filtered activities for the sector
         sector_activities = generate_sets_from_filters(yaml_file, database)
         
         # Debug: print the activities for the current sector
-        print(f"Activities for {key}:")
+        # print(f"Activities for {key}:")
         for activity in sector_activities[yaml_identifier]:
-            print(f"  {activity.key}")
+            # print(f"  {activity.key}")
 
         # Convert the set of activities to a list
         activities_list = list(sector_activities[yaml_identifier])

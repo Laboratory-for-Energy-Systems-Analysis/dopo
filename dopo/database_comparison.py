@@ -27,15 +27,14 @@ def database_comparison_plots(database_dict_ecoinvent, database_dict_premise, me
 
     Args:
         database_dict_ecoinvent (dict): A dictionary representing the first LCA database (e.g., 
-                                        ecoinvent). Keys are activity names or IDs, and values are 
-                                        corresponding activity data.
+                                        ecoinvent).
         database_dict_premise (dict): A dictionary representing the second LCA database (e.g., 
-                                        premise). Keys are activity names or IDs, and values are 
-                                        corresponding activity data.
+                                        premise).
         method_dict (dict): A dictionary where keys are method names or IDs and values are 
                             corresponding method data.
         excel_file (str): The name of the Excel file where the comparison plots will be saved.
-        current_row (int): The starting row in the Excel sheet where the bar chart will be inserted.
+        current_row (int): The last row in the Excel sheet occupied by stacked bar plot. The 
+                            comparison charts will be inserted below.
 
     Returns:
         None
@@ -43,11 +42,9 @@ def database_comparison_plots(database_dict_ecoinvent, database_dict_premise, me
     The function performs the following steps:
     1. Calculates the relative changes in LCA scores between the two databases using the provided 
         methods.
-    2. Saves the results to the specified Excel file, determining the appropriate column positions 
-        for the data.
+    2. Saves the results to the specified Excel file.
     3. Generates a bar chart that visually compares the LCA scores between the two databases and 
         appends it to the Excel file.
-    4. The starting row for the bar chart is determined by `current_row`.
 
     Note:
         - The function relies on helper functions such as `relative_changes_db` to calculate the 
@@ -59,6 +56,20 @@ def database_comparison_plots(database_dict_ecoinvent, database_dict_premise, me
     _barchart_compare_db_xcl(excel_file, column_positions, current_row)
 
 def _lca_scores_compare(database_dict, method_dict):
+    """
+    Compare Life Cycle Assessment (LCA) scores across different sectors and methods.
+
+    Args:
+        database_dict (dict): Dictionary where each key is a sector name and each value is a dictionary 
+            containing activities of that sector.
+        method_dict (dict): Dictionary where each key is a method identifier and each value is a dictionary 
+            containing method details such as 'method name', 'short name', and 'unit'.
+
+    Returns:
+        dict: A nested dictionary where each key is a sector name, and each value is a dictionary containing 
+        DataFrames for each method with total LCA scores related information for all activities.
+    """
+
     # Dictionary to store DataFrames for each sector
     sector_dataframes = {}
 
@@ -120,6 +131,19 @@ def _lca_scores_compare(database_dict, method_dict):
     return sector_dataframes
 
 def _relative_changes_df(database_dict_eco, database_dict_premise, method_dict):
+    """
+    Compute relative changes in Life Cycle Assessment (LCA) scores between two databases (ecoinvent and premise) 
+    across different sectors and methods.
+
+    Args:
+        database_dict_eco (dict): Dictionary of sectors with activities for the ecoinvent database.
+        database_dict_premise (dict): Dictionary of sectors with activities for the premise database.
+        method_dict (dict): Dictionary of methods with their details such as 'method name', 'short name', and 'unit'.
+
+    Returns:
+        dict: A nested dictionary where each key is a sector name, and each value is a dictionary containing 
+        DataFrames for each method with relative changes in LCA scores and related information.
+    """
 
     ecoinvent_scores = _lca_scores_compare(database_dict_eco, method_dict)
     premise_scores = _lca_scores_compare(database_dict_premise, method_dict)
@@ -140,18 +164,15 @@ def _relative_changes_df(database_dict_eco, database_dict_premise, method_dict):
                 df_ei = ecoinvent_scores[sector_key][method_key]
                 df_premise = premise_scores[sector_key][method_key]
 
-                #print(df_ei['activity key'])
-                #print(df_premise)
-
                 # Split the 'activity key' to extract the second part
                 # Access the second element of the tuple
                 df_ei['activity_code'] = df_ei['activity key'].apply(lambda x: x[1])
-                print("df_ei")
-                print(df_ei)
+                # print("df_ei")
+                # print(df_ei)
 
                 df_premise['activity_code'] = df_premise['activity key'].apply(lambda x: x[1])
-                print("df_premise")
-                print(df_premise)
+                # print("df_premise")
+                # print(df_premise)
 
                 # Perform a full outer merge on 'activity_code' and 'method' to include all rows
                 merged_df = pd.merge(df_ei, df_premise, on=['activity_code', 'method'], how='outer',
@@ -170,14 +191,18 @@ def _relative_changes_df(database_dict_eco, database_dict_premise, method_dict):
     return relative_dict
 
 def _add_sector_marker(df, sector):
-    '''
-    It is called in the function sector_lca_scores_to_excel_and_column_positions.
+    """
+    Adds a 'sector' column to the DataFrame for labeling and plotting purposes, and reorders columns 
+    to place 'sector' after 'product' if it exists.
 
-    It adds information about the sector for titel and labeling in plotting.
+    Args:
+        df (pd.DataFrame): DataFrame to modify.
+        sector (str): Sector name to add as a marker.
 
-    Returns df with added column.
-    '''
-    
+    Returns:
+        pd.DataFrame: DataFrame with the added 'sector' column and reordered columns.
+    """
+   
     # Add sector marker column
     df['sector']=str(sector) # potentially remove!
     # Reorder the columns to move 'sector' after 'product'
@@ -197,8 +222,24 @@ def _add_sector_marker(df, sector):
 
 
 def _relative_changes_db(database_dict_eco, database_dict_premise, method_dict, excel_file):
+    """
+    Computes relative changes in LCA scores between two databases (ecoinvent and premise), adds 
+    sector markers, and writes the results to an Excel file. Also returns the column positions for plotting.
+
+    Args:
+        database_dict_eco (dict): Dictionary of sectors with activities for the ecoinvent database.
+        database_dict_premise (dict): Dictionary of sectors with activities for the premise database.
+        method_dict (dict): Dictionary of methods with their details such as 'method name', 
+        'short name', and 'unit'.
+        excel_file (str): Path to the Excel file where results are to be saved.
+
+    Returns:
+        dict: Dictionary containing the positions of specific columns for each sector and 
+        method comparison.
+    """
+
     relative_dict = _relative_changes_df(database_dict_eco, database_dict_premise, method_dict)
-    print(relative_dict)
+    # print(relative_dict)
 
     # Load existing workbook and get existing sheet names
     try:
@@ -246,6 +287,17 @@ def _relative_changes_db(database_dict_eco, database_dict_premise, method_dict, 
 
 
 def _categorize_sheets_by_sector_comparison(file_path):
+    """
+    Categorizes Excel sheets by sector based on their names from a given file. 
+
+    Args:
+        file_path (str): Path to the Excel file.
+
+    Returns:
+        dict: A dictionary where each key is a sector and each value is a list of sheet names 
+        corresponding to that sector.
+    """
+
     # Load the workbook
     workbook = load_workbook(filename=file_path, read_only=True)
     
@@ -270,7 +322,19 @@ def _categorize_sheets_by_sector_comparison(file_path):
     return worksheet_dict
 
 def _barchart_compare_db_xcl(filename, index_positions, current_row_stacked_bar):
-      
+    """
+    Generates bar charts comparing relative changes from multiple Excel worksheets, 
+    organizes them by sector, and saves the charts to new sheets in the same Excel file.
+
+    Args:
+        filename (str): Path to the Excel file containing the data.
+        index_positions (dict): Dictionary with the positions of relevant columns for each sheet.
+        current_row_stacked_bar (int): Initial row position for placing stacked bar charts.
+
+    Returns:
+        None. Saves the charts directly into the Excel file.
+    """
+
     worksheet_dict =_categorize_sheets_by_sector_comparison(file_path=filename)
     # Load the workbook and select the sheet
     wb = load_workbook(filename)
