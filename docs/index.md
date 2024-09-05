@@ -1,4 +1,4 @@
-# premise_validation
+# dopo
 
 ```{button-link} https://docs.brightway.dev
 :color: info
@@ -12,7 +12,8 @@ hidden:
 maxdepth: 1
 ---
 self
-content/usage
+content/about
+cotent/examples
 content/api/index
 content/codeofconduct
 content/contributing
