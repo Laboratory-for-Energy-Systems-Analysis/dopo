@@ -1,32 +1,36 @@
 ## Detecting Outliers in Premise Operations (dopo)
 
-[![PyPI](https://img.shields.io/pypi/v/premise_validation.svg)][pypi status]
-[![Status](https://img.shields.io/pypi/status/premise_validation.svg)][pypi status]
-[![Python Version](https://img.shields.io/pypi/pyversions/premise_validation)][pypi status]
-[![License](https://img.shields.io/pypi/l/premise_validation)][license]
+[![PyPI](https://img.shields.io/pypi/v/dopo.svg)][pypi status]
+[![Status](https://img.shields.io/pypi/status/dopo.svg)][pypi status]
+[![Python Version](https://img.shields.io/pypi/pyversions/dopo)][pypi status]
+[![License](https://img.shields.io/pypi/l/dopo)][license]
 
-[![Read the documentation at https://premise_validation.readthedocs.io/](https://img.shields.io/readthedocs/premise_validation/latest.svg?label=Read%20the%20Docs)][read the docs]
-[![Tests](https://github.com/cafriedb/premise_validation/actions/workflows/python-test.yml/badge.svg)][tests]
-[![Codecov](https://codecov.io/gh/cafriedb/premise_validation/branch/main/graph/badge.svg)][codecov]
+[![Read the documentation at https://dopo.readthedocs.io/](https://img.shields.io/readthedocs/dopo/latest.svg?label=Read%20the%20Docs)][read the docs]
+[![Tests](https://github.com/polca/dopo/actions/workflows/python-test.yml/badge.svg)][tests]
 
-[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)][pre-commit]
-[![Black](https://img.shields.io/badge/code%20style-black-000000.svg)][black]
-
-[pypi status]: https://pypi.org/project/premise_validation/
-[read the docs]: https://premise_validation.readthedocs.io/
-[tests]: https://github.com/cafriedb/premise_validation/actions?workflow=Tests
-[codecov]: https://app.codecov.io/gh/cafriedb/premise_validation
+[pypi status]: https://pypi.org/project/dopo/
+[read the docs]: https://dopo.readthedocs.io/
+[tests]: https://github.com/cafriedb/dopo/actions?workflow=Tests
+[codecov]: https://app.codecov.io/gh/cafriedb/dopo
 [pre-commit]: https://github.com/pre-commit/pre-commit
 [black]: https://github.com/psf/black
 
 ## About dopo
-The **Premise Validation Project** introduces the Python package ``dopo`` (short for Detecting Outliers in Premise Operations). This package provides an outlier detection framework specifically designed for premise-based prospective Life Cycle Assessment (LCA) databases.
+The **Premise Validation Project** introduces the Python package ``dopo`` 
+(**D**etecting **O**utliers in **P**remise **O**perations), an outlier 
+detection framework for ``premise``-based and scenario-based 
+Life Cycle Assessment (LCA) databases.
 
-``dopo`` visualizes premise databases by sector and defined characterization methods. It can also quickly compare LCA scores between a premise database and an ecoinvent database. It currently generates three types of plots that present data at varying levels of granularity, along with tables containing detailed information. The visualizations are outputted in an Excel workbook, making it easier for users to analyze and interpret the results.
+``dopo`` visualizes and compares LCA datasets by sector and 
+characterization methods, generating three types of plots and 
+detailed tables. It allows quick comparison between the examined 
+database and the original *ecoinvent* database, with results exported 
+to an Excel workbook for easy analysis.
 
-The goal of ``dopo`` is to streamline the outlier detection process, allowing users to quickly identify anomalies in premise data and better understand their implications on LCA results.
-
-Besides, ``dopo`` can also be used adaptively for visualizing a whole database not filtered by sector and to assess any other database used in brightway.
+The goal of dopo is to streamline outlier detection, enabling users 
+to quickly identify anomalies and understand their impact on LCA results. 
+Additionally, dopo can visualize entire databases or any other 
+databases used in Brightway.
 
 ## Documentation
 
@@ -58,12 +62,16 @@ please [file an issue][Issue Tracker] along with a detailed description.
 
 <!-- github-only -->
 
-[command-line reference]: https://premise_validation.readthedocs.io/en/latest/usage.html
-[License]: https://github.com/cafriedb/premise_validation/blob/main/LICENSE
-[Contributor Guide]: https://github.com/cafriedb/premise_validation/blob/main/CONTRIBUTING.md
-[Issue Tracker]: https://github.com/cafriedb/premise_validation/issues
+[License]: https://github.com/polca/dopo/blob/main/LICENSE
+[Contributor Guide]: https://github.com/polca/dopo/blob/main/CONTRIBUTING.md
+[Issue Tracker]: https://github.com/polca/dopo/issues
 
+## Maintainers
+
+- [Caroline Friedberger](cafriedb@stud.ntnu.no), NTNU
+- [Romain Sacchi](romain.sacchi@psi.ch), PSI
 
 ## Support
 
-Feel free to contact cafriedb@stud.ntnu.no
+Feel free to contact [Caroline Friedberger](cafriedb@stud.ntnu.no) if 
+you have any questions or need help.
