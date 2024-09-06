@@ -12,9 +12,9 @@ Here is a list of important resources for contributors:
 - [Code of Conduct][Code of Conduct]
 
 [License]: https://opensource.org/licenses/MIT
-[Source Code]: https://github.com/cafriedb/premise_validation
-[Documentation]: https://premise_validation.readthedocs.io/
-[Issue Tracker]: https://github.com/cafriedb/premise_validation/issues
+[Source Code]: https://github.com/polca/dopo
+[Documentation]: https://dopo.readthedocs.io/
+[Issue Tracker]: https://github.com/polca/dopo/issues
 
 ## How to report a bug
 
@@ -108,4 +108,4 @@ It is recommended to open an issue before starting work on anything.
 This will allow a chance to talk it over with the owners and validate your approach.
 
 [pytest]: https://pytest.readthedocs.io/
-[pull request]: https://github.com/cafriedb/premise_validation/pulls
+[pull request]: https://github.com/polca/dopo/pulls

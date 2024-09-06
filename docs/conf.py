@@ -48,7 +48,7 @@ intersphinx_mapping = {
 ### theme configuration ############################################################################
 
 html_theme = "sphinx_rtd_theme"
-html_title = "premise_validation"
+html_title = "dopo"
 html_show_sphinx = False
 
 html_theme_options = {
