@@ -1,91 +1,61 @@
-Electricity production all:
-  ecoinvent_aliases:
-    fltr:
-      name: electricity production
-
-Electricity production fossil:
-  ecoinvent_aliases:
-    fltr:
-     - electricity production
-    mask:
-      name:
-        - biomass
-        - biomethane
-        - hydro
-        - geothermal
-        - photovoltaic
-        - solar
-        - wind
-        - wood
-        - nuclear
-        - Evolutionary
-        - refinery operation
-        - compressed air
-        - aluminium industry
-        - cobalt
-
-
-Electricity production renewables:
- ecoinvent_aliases:
+all:
   fltr:
-   name: electricity production
+    name: electricity production
 
+fossil:
+  fltr:
+   - electricity production
   mask:
     name:
-      - coal
-      - lignite
-      - natural gas
-      - oil
+      - biomass
+      - biomethane
+      - hydro
+      - geothermal
+      - photovoltaic
+      - solar
+      - wind
+      - wood
       - nuclear
       - Evolutionary
-      - Reactor
-      - petroleum
+      - refinery operation
+      - compressed air
+      - aluminium industry
       - cobalt
-      - peat
 
-Electricity production nuclear:
+
+renewables:
  ecoinvent_aliases:
   fltr:
    name: electricity production
-  
-  mask: 
+   mask:
     name:
-      - coal
-      - lignite
-      - natural gas
-      - oil
-      - hydro
-      - wind
-      - solar
-      - photovoltaic
-      - geothermal
-      - wood
-      - biomass
-      - wave energy
-      - biomethane
-      - petroleum 
-      - compressed air
-      - aluminium industry
-      - peat
-      - cobalt
-      - Swiss
+     - coal
+     - lignite
+     - natural gas
+     - oil
+     - petroleum
+     - hydrogen
+     - nuclear
 
-Electricity production biomass:
- ecoinvent_aliases:
+nuclear:
+  fltr:
+   name:
+    - electricity production
+    - nuclear
+
+biomass:
   fltr:
    name: 
     - electricity production
     - biomass
 
-Electricity production biomethane:
- ecoinvent_aliases:
+biomethane:
   fltr:
    name: 
     - electricity production
     - biomethane
 
-Electricity production hydro:
- ecoinvent_aliases:
+hydro:
   fltr:
    name: 
     - electricity production
@@ -93,50 +63,43 @@ Electricity production hydro:
   mask:
     name: hydrogen-fired
 
-Electricity production geothermal:
- ecoinvent_aliases:
+geothermal:
   fltr:
    name: 
     - electricity production
     - geothermal
 
-Electricity production photovoltaic:
- ecoinvent_aliases:
+photovoltaic:
   fltr:
    name: 
     - electricity production
     - photovoltaic
 
-Electricity production solar:
- ecoinvent_aliases:
+solar:
   fltr:
    name: 
     - electricity production
     - solar
 
-Electricity production wind:
- ecoinvent_aliases:
+wind:
   fltr:
    name: 
     - electricity production
     - wind
 
-Electricity production wood:
- ecoinvent_aliases:
+wood:
   fltr:
    name: 
     - electricity production
     - wood
 
-Electricity production wave energy:
- ecoinvent_aliases:
+wave energy:
   fltr:
    name: 
     - electricity production
     - wave energy
 
-Electricity production coal:
- ecoinvent_aliases:
+coal:
   fltr:
    name: 
     - electricity production
@@ -144,15 +107,13 @@ Electricity production coal:
   mask:
     reference product: internal use in coal mining
 
-Electricity production lignite:
- ecoinvent_aliases:
+lignite:
   fltr:
    name: 
     - electricity production
     - lignite
 
-Electricity production natural gas:
- ecoinvent_aliases:
+natural gas:
   fltr:
    name: 
     - electricity production
@@ -161,8 +122,7 @@ Electricity production natural gas:
     name: hydrogen
   
 
-Electricity production oil:
- ecoinvent_aliases:
+oil:
   fltr:
    name: 
     - electricity production
@@ -170,10 +130,9 @@ Electricity production oil:
   mask:
     name: nuclear
 
-Electricity production petroleum:
- ecoinvent_aliases:
+petroleum:
   fltr:
-   name: 
+   name:
     - electricity production
     - petroleum
 

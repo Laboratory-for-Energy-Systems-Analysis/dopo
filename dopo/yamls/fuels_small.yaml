@@ -1,13 +1,12 @@
-Fuels:
-  ecoinvent_aliases:
-    fltr:
-      name: 
-        - heavy fuel oil production
+fuels:
+  fltr:
+    name:
+      - heavy fuel oil production
 
-    mask:
-      location:
-        - RoW
-        - Europe without Switzerland
+  mask:
+    location:
+      - RoW
+      - Europe without Switzerland
 
 
 

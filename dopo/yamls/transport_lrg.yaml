@@ -1,4 +1,4 @@
-Freight transport:
+freight:
   ecoinvent_aliases:
     fltr:
       name: transport
@@ -9,7 +9,7 @@ Freight transport:
         - pipeline
       reference product: tractor and trailer
 
-Passenger transport (person kilometer):
+passenger (collective):
   ecoinvent_aliases:
     fltr:
       name: transport
@@ -17,7 +17,7 @@ Passenger transport (person kilometer):
     mask:
       name: market
 
-Passenger transport (kilometer):
+passenger (individual):
   ecoinvent_aliases:
     fltr:
       name: transport
@@ -27,7 +27,7 @@ Passenger transport (kilometer):
         - person
         - ton
 
-Passenger transport (all):
+passenger (all):
   ecoinvent_aliases:
     fltr:
       name: transport

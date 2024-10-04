@@ -1,7 +1,10 @@
-# Imports
-# -------
+"""
+This module contains functions to filter activities from a database based on
+a YAML file with filter specifications.
+"""
 
 import yaml
+import bw2data
 
 # Sector filter functions from premise
 # ---------------------------------------------------
@@ -9,8 +12,8 @@ import yaml
 
 def _act_fltr(
     database: list,
-    fltr=None,
-    mask=None,
+    fltr: [str, list, dict] = None,
+    mask: [str, list, dict] = None,
 ):
     """Filter `database` for activities_list matching field contents given by `fltr` excluding strings in `mask`.
     `fltr`: string, list of strings or dictionary.
@@ -50,39 +53,38 @@ def _act_fltr(
         if isinstance(value, list):
             for val in value:
                 filters = [a for a in filters if val in a[field]]
-
-            # filters.extend([ws.either(*[ws.contains(field, v) for v in value])])
         else:
             filters = [a for a in filters if value in a[field]]
-
-            # filters.append(ws.contains(field, value))
 
     if mask:
         for field, value in mask.items():
             if isinstance(value, list):
                 for val in value:
                     filters = [f for f in filters if val not in f[field]]
-                # filters.extend([ws.exclude(ws.contains(field, v)) for v in value])
             else:
                 filters = [f for f in filters if value not in f[field]]
-                # filters.append(ws.exclude(ws.contains(field, value)))
 
     return filters
 
 
-def generate_sets_from_filters(yaml_filepath, database) -> dict:
+def generate_sets_from_filters(
+        filepath: str,
+        database: bw2data.Database
+) -> dict:
     """
     Generate a dictionary with sets of activity names for
     technologies from the filter specifications.
 
-    :param filtr:
-    :func:`activity_maps.InventorySet._act_fltr`.
-    :return: dictionary with the same keys as provided in filter
-        and a set of activity data set names as values.
+    :param filepath: path to the YAML file with filter specifications
+    :type filepath: str
+    :param database: A lice cycle inventory database
+    :type database: brightway2 database object
+    :return: A dictionary with sets of activity names for technologies
     :rtype: dict
+
     """
 
-    filtr = _get_mapping(yaml_filepath, var="ecoinvent_aliases")
+    filtr = _get_mapping(filepath, var="ecoinvent_aliases")
 
     names = []
 
@@ -96,13 +98,6 @@ def generate_sets_from_filters(yaml_filepath, database) -> dict:
             else:
                 names.append(entry["fltr"])
 
-    # subset = list(
-    #    ws.get_many(
-    #        database,
-    #        ws.either(*[ws.contains("name", name) for name in names]),
-    #    )
-    # )
-
     subset = [a for a in database if any(x in a["name"] for x in names)]
 
     techs = {
@@ -115,7 +110,7 @@ def generate_sets_from_filters(yaml_filepath, database) -> dict:
     return mapping
 
 
-def _get_mapping(filepath, var):
+def _get_mapping(filepath: str, var: str) -> dict:
     """
     Loa a YAML file and return a dictionary given a variable.
     :param filepath: YAML file path

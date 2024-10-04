@@ -1,0 +1,21 @@
+cement:
+  fltr:
+    name: cement production
+    reference product: cement
+  mask:
+    name:
+      - carbon dioxide
+      - new alternative
+    reference product:
+      - slag
+      - nickel
+      - hard coal ash
+
+clinker:
+  fltr:
+    name: clinker production
+    reference product: clinker
+  mask:
+    unit:
+      - cubic meter
+

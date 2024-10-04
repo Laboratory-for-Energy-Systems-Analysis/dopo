@@ -1,0 +1,25 @@
+steel (primary):
+  fltr:
+    name:
+      - steel production
+  mask:
+    reference product:
+      - heat, district or industrial, other than natural gas
+      - vanadium
+
+iron:
+  fltr:
+    name: pig iron production
+  mask:
+    name:
+      - wastewater
+      - sewage sludge
+      - residues
+      - bottom ash
+
+steel (secondary):
+  fltr:
+    name:
+      - steel
+      - electric
+    reference product: steel
