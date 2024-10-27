@@ -24,10 +24,9 @@ fossil:
 
 
 renewables:
- ecoinvent_aliases:
   fltr:
-   name: electricity production
-   mask:
+    name: electricity production
+  mask:
     name:
      - coal
      - lignite

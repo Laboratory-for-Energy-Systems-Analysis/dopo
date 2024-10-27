@@ -8,17 +8,18 @@ another activity and stores thes stats in a dictionary. These stats should be fu
 added to generated excel tables to compare relevance of activities over the whole database.
 """
 
-from dopo import generate_sets_from_filters
+from .activity_filter import generate_sets_from_filters
 import copy
 import numpy as np 
 
 def process_yaml_files(files_dict, database):
     """
-    Processes YAML files to filter activities based on defined criteria and updates a dictionary 
-    with the filtered activities.
+    Processes YAML files to filter activities based on defined
+    criteria and updates a dictionary with the filtered activities.
 
-    This function iterates through a dictionary of YAML file paths and identifiers, applies filters 
-    defined in the YAML files to a given database, and updates the dictionary with the filtered 
+    This function iterates through a dictionary of YAML file paths
+    and identifiers, applies filters defined in the YAML files to a
+    given database, and updates the dictionary with the filtered
     activities for each sector.
 
     Parameters
@@ -35,8 +36,8 @@ def process_yaml_files(files_dict, database):
     Returns
     -------
     dict
-        The updated dictionary with an additional key 'activities' for each sector, which contains 
-        a list of filtered activities.
+        The updated dictionary with an additional key 'activities'
+        for each sector, which contains a list of filtered activities.
     """
     
     # Create a deep copy of the input dictionary to avoid modifying the original

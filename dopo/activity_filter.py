@@ -5,6 +5,7 @@ a YAML file with filter specifications.
 
 import yaml
 import bw2data
+from pathlib import Path
 
 # Sector filter functions from premise
 # ---------------------------------------------------
@@ -67,24 +68,19 @@ def _act_fltr(
     return filters
 
 
-def generate_sets_from_filters(
-        filepath: str,
-        database: bw2data.Database
-) -> dict:
+def generate_sets_from_filters(filtr: dict, database: bw2data.Database) -> dict:
     """
     Generate a dictionary with sets of activity names for
     technologies from the filter specifications.
 
-    :param filepath: path to the YAML file with filter specifications
-    :type filepath: str
+    :param mapping: path to the YAML file with filter specifications
+    :type mapping: str
     :param database: A lice cycle inventory database
     :type database: brightway2 database object
     :return: A dictionary with sets of activity names for technologies
     :rtype: dict
 
     """
-
-    filtr = _get_mapping(filepath, var="ecoinvent_aliases")
 
     names = []
 
@@ -110,9 +106,9 @@ def generate_sets_from_filters(
     return mapping
 
 
-def _get_mapping(filepath: str, var: str) -> dict:
+def _get_mapping(filepath: [str, Path]) -> dict:
     """
-    Loa a YAML file and return a dictionary given a variable.
+    Load a YAML file and return a dictionary given a variable.
     :param filepath: YAML file path
     :param var: variable to return the dictionary for.
     :param model: if provided, only return the dictionary for this model.
@@ -120,15 +116,4 @@ def _get_mapping(filepath: str, var: str) -> dict:
     """
 
     with open(filepath, "r", encoding="utf-8") as stream:
-        techs = yaml.full_load(stream)
-
-    mapping = {}
-    for key, val in techs.items():
-        if var in val:
-            mapping[key] = val[var]
-
-    return mapping
-
-
-# Example on how to call the functions to create a set of filtered activities_list
-# set_from_fltrs = generate_sets_from_filters(yaml_filepath, database=ei39SSP)
+        return yaml.full_load(stream)

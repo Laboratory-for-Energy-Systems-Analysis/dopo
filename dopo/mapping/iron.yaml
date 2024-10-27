@@ -1,0 +1,9 @@
+iron:
+  fltr:
+    name: pig iron production
+  mask:
+    name:
+      - wastewater
+      - sewage sludge
+      - residues
+      - bottom ash
