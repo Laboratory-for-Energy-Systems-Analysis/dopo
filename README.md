@@ -44,6 +44,15 @@ You can install _dopo_ via [pip] from [PyPI]:
 $ pip install dopo
 ```
 
+## Usage
+
+To use the dashboard, go to `dopo/dash`, then
+
+```console
+$ python app.py
+```
+
+
 ## Contributing
 
 Contributions are very welcome.

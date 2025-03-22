@@ -1,13 +1,13 @@
 # app.py
 from dash import Dash, html, dcc, callback_context, no_update
-from components.sidebar import sidebar_layout
-from components.main_content import main_content_layout
+from .components.sidebar import sidebar_layout
+from .components.main_content import main_content_layout
 from dash import Output, Input, State
-from calculations.calculation import get_projects, get_methods, get_databases, activate_project, analyze
+from .calculations.calculation import get_projects, get_methods, get_databases, activate_project, analyze
 from dopo.dopo import SECTORS
 import plotly.graph_objects as go
-from utils.conversion import convert_dataframe_to_dict
-from plot.plot import contribution_plot, prepare_dataframe, scores_plot
+from .utils.conversion import convert_dataframe_to_dict
+from .plot.plot import contribution_plot, prepare_dataframe, scores_plot
 import dash_bootstrap_components as dbc
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.YETI, dbc.icons.FONT_AWESOME])
@@ -205,5 +205,5 @@ def run_analysis_and_plot(n_clicks, selected_sector, selected_method, selected_p
     # Default return if no specific case is triggered
     return no_update, go.Figure(), no_update, no_update, no_update, no_update, no_update, no_update
 
-if __name__ == "__main__":
+def main():
     app.run(debug=True)

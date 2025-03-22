@@ -76,10 +76,6 @@ packages = ["dopo"]
 version = {attr = "dopo.__version__"}
 
 
-[tool.setuptools.packages.find]
-include = ["dopo*"]
-
-
 [tool.pytest.ini_options]
 addopts = "--cov dopo --cov-report term-missing --verbose"
 norecursedirs = [
@@ -102,6 +98,10 @@ exclude = [
     ".eggs",
     "docs/conf.py",
 ]
+
+[project.scripts]
+dopo-dash = "dopo.dash.app:main"
+
 
 [tool.black]
 line-length = 88
