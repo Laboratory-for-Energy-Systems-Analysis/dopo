@@ -1,0 +1,9 @@
+electricity (solar):
+  fltr:
+   name:
+    - electricity production
+    - solar
+
+
+
+

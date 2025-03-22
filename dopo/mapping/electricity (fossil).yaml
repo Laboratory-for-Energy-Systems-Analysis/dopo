@@ -1,0 +1,23 @@
+electricity (fossil):
+  fltr:
+   - electricity production
+  mask:
+    name:
+      - biomass
+      - biomethane
+      - hydro
+      - geothermal
+      - photovoltaic
+      - solar
+      - wind
+      - wood
+      - nuclear
+      - Evolutionary
+      - refinery operation
+      - compressed air
+      - aluminium industry
+      - cobalt
+
+
+
+

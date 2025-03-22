@@ -1,0 +1,10 @@
+electricity (coal):
+  fltr:
+   name:
+    - electricity production
+    - coal
+  mask:
+    reference product: internal use in coal mining
+
+
+

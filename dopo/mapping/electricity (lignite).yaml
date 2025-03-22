@@ -1,0 +1,8 @@
+electricity (lignite):
+  fltr:
+   name:
+    - electricity production
+    - lignite
+
+
+

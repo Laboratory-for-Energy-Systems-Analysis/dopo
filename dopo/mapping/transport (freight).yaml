@@ -1,0 +1,18 @@
+transport (freight):
+  fltr:
+    name: transport
+    unit: ton kilometer
+  mask:
+    name:
+      - market
+      - pipeline
+    reference product: tractor and trailer
+
+
+
+
+
+
+
+
+

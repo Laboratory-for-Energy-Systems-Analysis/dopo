@@ -1,0 +1,10 @@
+steel (primary):
+  fltr:
+    name:
+      - steel production
+  mask:
+    reference product:
+      - heat, district or industrial, other than natural gas
+      - vanadium
+      - electric
+

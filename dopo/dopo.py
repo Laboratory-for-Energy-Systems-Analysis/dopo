@@ -10,8 +10,11 @@ from .lca import sector_lca_scores
 
 MAPPING_DIR = Path(__file__).resolve().parent / "mapping"
 
-SECTORS = ["cement", "steel", "iron", "fuel", "electricity", "transport"]
+def load_sectors():
+    """ Search for .yaml files in dopo/mapping. Return a list of sector names without the extension. """
+    return [f.stem.replace(".yaml", "") for f in MAPPING_DIR.glob("*.yaml")]
 
+SECTORS = load_sectors()
 
 class Dopo:
     def __init__(self):
@@ -46,12 +49,19 @@ class Dopo:
         if len(self.databases) > 0:
             for db in self.databases:
                 for sector in self.sectors:
-                    self.activities.update(
-                        generate_sets_from_filters(
+                    if sector in self.activities:
+                        self.activities[sector].update(
+                            generate_sets_from_filters(
+                                _get_mapping(Path(MAPPING_DIR) / f"{sector}.yaml"),
+                                bd.Database(db),
+                            )[sector]
+                        )
+                    else:
+                        self.activities[sector] = generate_sets_from_filters(
                             _get_mapping(Path(MAPPING_DIR) / f"{sector}.yaml"),
                             bd.Database(db),
-                        )
-                    )
+                        )[sector]
+
         else:
             print("No databases found.")
 

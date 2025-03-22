@@ -62,16 +62,16 @@ please [file an issue][Issue Tracker] along with a detailed description.
 
 <!-- github-only -->
 
-[License]: https://github.com/polca/dopo/blob/main/LICENSE
-[Contributor Guide]: https://github.com/polca/dopo/blob/main/CONTRIBUTING.md
-[Issue Tracker]: https://github.com/polca/dopo/issues
+[License]: https://github.com/Laboratory-for-Energy-Systems-Analysis/dopo/blob/main/LICENSE
+[Contributor Guide]: https://github.com/Laboratory-for-Energy-Systems-Analysis/dopo/blob/main/CONTRIBUTING.md
+[Issue Tracker]: https://github.com/Laboratory-for-Energy-Systems-Analysis/dopo/issues
 
 ## Maintainers
 
-- [Caroline Friedberger](cafriedb@stud.ntnu.no), NTNU
 - [Romain Sacchi](romain.sacchi@psi.ch), PSI
+- [Caroline Friedberger](cafriedb@stud.ntnu.no), NTNU
 
 ## Support
 
-Feel free to contact [Caroline Friedberger](cafriedb@stud.ntnu.no) if 
+Feel free to contact [Romain Sacchi](romain.sacchi@psi.ch) if 
 you have any questions or need help.

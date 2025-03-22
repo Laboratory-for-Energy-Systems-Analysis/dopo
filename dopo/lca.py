@@ -47,7 +47,7 @@ def sector_lca_scores(sectors, methods, cutoff=0.01) -> dict:
 
         # turn lca_scores into a long tables
         scores = scores.melt(
-            id_vars=['activity', 'product', 'location', 'unit', 'method', 'method unit',],
+            id_vars=['activity', 'product', 'database', 'location', 'unit', 'method', 'method unit',],
             var_name='input',
             value_name='score'
         )
@@ -137,12 +137,13 @@ def _agg_small_inputs(dataframe, cutoff=0.01):
     :rtype: pandas DataFrame
     """
 
+
     # remove rows with 'total' in the input column
     dataframe = dataframe[~dataframe['input'].str.contains("total")]
 
 
     # First, we will calculate the sum of scores for each group
-    group_columns = ['activity', 'product', 'location', 'method', 'method unit']
+    group_columns = ['activity', 'product', 'location', 'database', 'method', 'method unit']
     dataframe.loc[:, 'total_score'] = dataframe.groupby(group_columns)['score'].transform('sum').copy()
 
     # Next, calculate the percentage for each row
@@ -227,34 +228,24 @@ def compare_activities_by_grouped_leaves(
         ],
         reverse=True,
     )
-    name_common = commonprefix([act["name"] for act in activities])
-
-    if " " not in name_common:
-        name_common = ""
-    else:
-        last_space = len(name_common) - operator.indexOf(reversed(name_common), " ")
-        name_common = name_common[:last_space]
-        print("Omitting activity name common prefix: '{}'".format(name_common))
-
-    product_common = commonprefix(
-        [act.get("reference product", "") for act in activities]
-    )
 
     labels = [
         "activity",
         "product",
+        "database",
         "location",
         "unit",
         "total",
-        "direct emissions",
+        "Direct emissions",
     ] + [key for _, key in sorted_keys]
     data = []
     for act, lst in zip(activities, objs):
         lca.lcia({act.id: 1})
         data.append(
             [
-                act["name"].replace(name_common, ""),
-                act.get("reference product", "").replace(product_common, ""),
+                act["name"],
+                act.get("reference product", ""),
+                act["database"],
                 act.get("location", "")[:25],
                 act.get("unit", ""),
                 lca.score,

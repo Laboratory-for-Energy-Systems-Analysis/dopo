@@ -1,0 +1,13 @@
+transport (passenger):
+  fltr:
+    name: transport
+    unit: person kilometer
+  mask:
+    name: market
+
+
+
+
+
+
+
