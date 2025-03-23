@@ -8,9 +8,14 @@ from bw2analyzer.comparisons import group_leaves, commonprefix, get_value_for_cp
 import operator
 import tabulate
 import bw2data as bd
+from bw2calc import __version__ as bc_version
 import bw2calc as bc
 import pandas as pd
 pd.options.mode.chained_assignment = None  # default='warn'
+
+if isinstance(bc_version, str):
+    bc_version = tuple(map(int, bc_version.split(".")))
+
 
 def sector_lca_scores(sectors, methods, cutoff=0.01) -> dict:
     """
@@ -243,9 +248,9 @@ def compare_activities_by_grouped_leaves(
     ] + [key for _, key in sorted_keys]
     data = []
     for act, lst in zip(activities, objs):
-        try:
+        if bc_version >= (2, 0, 0):
             lca.lcia({act.id: 1})
-        except AttributeError:
+        else:
             lca.redo_lcia({act: 1})
         data.append(
             [
@@ -317,9 +322,9 @@ def find_leaves(
             cache[k] = lca_obj.score
     else:
         if k not in cache:
-            try:
+            if bc_version >= (2, 0, 0):
                 lca_obj.lcia({activity.id: amount})
-            except AttributeError:
+            else:
                 lca_obj.redo_lcia({activity: amount})
             if k not in activities_to_exclude_from_cache:
                 cache[k] = lca_obj.score
