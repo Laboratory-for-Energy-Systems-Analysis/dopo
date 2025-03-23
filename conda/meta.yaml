@@ -28,6 +28,7 @@ requirements:
     - pytest
     - PyYAML
     - tabulate
+    - scipy==1.14.1
 
 
 test:

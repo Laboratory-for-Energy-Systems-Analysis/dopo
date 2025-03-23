@@ -4,6 +4,7 @@ bw2data
 dash_bootstrap_components
 dash_daq
 numpy
+scipy==1.14.1
 openpyxl
 pandas
 plotly
