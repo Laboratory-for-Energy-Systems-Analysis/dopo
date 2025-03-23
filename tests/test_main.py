@@ -26,10 +26,11 @@ def test_update_databases(mock_get_databases, mock_activate_project):
 @patch("dopo.dash.app.get_classifications_from_database")
 def test_update_filtered_dataset_options(mock_get_classifications):
     mock_get_classifications.side_effect = lambda db, key: ["item1", "item2", "market item"]
-    sectors, cpc, isic = update_filtered_dataset_options(
-        ["cpc", "isic"], ["MockDB"], "market"
+    sectors, cpc, isic, datasets = update_filtered_dataset_options(
+        ["cpc", "isic", ], ["MockDB"], "market"
     )
     assert sectors == []
+    assert datasets == []
     assert all("market" in opt["label"] for opt in cpc)
     assert all("market" in opt["label"] for opt in isic)
 
