@@ -53,6 +53,12 @@ You can install _dopo_ via [pip] from [PyPI]:
 $ pip install dopo
 ```
 
+Or from Anaconda:
+
+```console
+$ conda install romainsacchi::dopo
+```
+
 ### How to run the app
 
 You can launch the app directly from the terminal using the following command:
