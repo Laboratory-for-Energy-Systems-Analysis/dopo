@@ -8,7 +8,7 @@ from .components.sidebar import sidebar_layout
 from .components.main_content import main_content_layout
 from .calculations.calculation import (
     get_projects, get_methods, get_databases,
-    activate_project, analyze, get_classifications_from_database
+    activate_project, analyze, get_classifications_from_database, get_datasets
 )
 from dopo.dopo import SECTORS
 from .utils.conversion import convert_dataframe_to_dict
@@ -73,7 +73,9 @@ def toggle_dataset_checklists(selected_types: List[str]) -> Tuple[dict, dict, di
 @app.callback(
     [Output("sectors-checklist", "options"),
      Output("cpc-checklist", "options"),
-     Output("isic-checklist", "options")],
+     Output("isic-checklist", "options"),
+     Output("dataset-checklist", "options"),
+     ],
     [Input("dataset-type-checklist", "value"),
      Input("databases-checklist", "value"),
      Input("dataset-search", "value")],
@@ -83,10 +85,10 @@ def update_filtered_dataset_options(
     selected_types: List[str],
     selected_databases: List[str],
     search_term: Union[str, None]
-) -> Tuple[List[dict], List[dict], List[dict]]:
+) -> Tuple[List[dict], List[dict], List[dict], List[dict]]:
     """Update checklist options for sectors, CPC, and ISIC based on selection and search."""
     if not selected_databases:
-        return [], [], []
+        return [], [], [], []
 
     selected_db = selected_databases[0]
     search_term = (search_term or "").lower()
@@ -94,7 +96,7 @@ def update_filtered_dataset_options(
     def filter_items(items: List[str]) -> List[str]:
         return [item for item in items if search_term in item.lower()]
 
-    sectors_options, cpc_options, isic_options = [], [], []
+    sectors_options, cpc_options, isic_options, dataset_options = [], [], [], []
 
     if "sectors" in selected_types:
         sectors_options = [{"label": s, "value": s} for s in filter_items(sorted(SECTORS))]
@@ -104,8 +106,10 @@ def update_filtered_dataset_options(
     if "isic" in selected_types:
         isic_data = get_classifications_from_database(selected_db, "isic")
         isic_options = [{"label": item, "value": item} for item in filter_items(isic_data)]
+    if "dataset" in selected_types:
+        dataset_options = [{"label": item, "value": item} for item in filter_items(list(set([ds["name"] for ds in get_datasets(selected_db)])))]
 
-    return sectors_options, cpc_options, isic_options
+    return sectors_options, cpc_options, isic_options, dataset_options
 
 
 @app.callback(
@@ -178,6 +182,7 @@ def update_impact_assessment_list(
      State("sectors-checklist", "value"),
      State("cpc-checklist", "value"),
      State("isic-checklist", "value"),
+     State("dataset-checklist", "value"),
      State("impact-assessment-checklist", "value"),
      State("analyze-data-store", "data"),
      State("dataset-type-checklist", "value"),
@@ -194,6 +199,7 @@ def run_analysis_and_plot(
     sectors: List[str],
     cpc: List[str],
     isic: List[str],
+    dataset: List[str],
     methods: List[str],
     stored_data: dict,
     search_type: List[str],
@@ -210,6 +216,8 @@ def run_analysis_and_plot(
         selected_items = cpc
     elif search_type == "isic":
         selected_items = isic
+    elif search_type == "dataset":
+        selected_items = dataset
     else:
         selected_items = sectors
 

@@ -32,6 +32,7 @@ sidebar_layout = html.Div([
                 {"label": "Sectors", "value": "sectors"},
                 {"label": "CPC", "value": "cpc"},
                 {"label": "ISIC", "value": "isic"},
+                {"label": "Dataset", "value": "dataset"},
             ],
             value=["sectors"],
             inline=True,
@@ -63,6 +64,8 @@ sidebar_layout = html.Div([
              id="cpc-container"),
     html.Div(dcc.Checklist(id="isic-checklist", style={"overflowY": "auto", "height": "100px", "padding": "15px"}),
              id="isic-container"),
+    html.Div(dcc.Checklist(id="dataset-checklist", style={"overflowY": "auto", "height": "100px", "padding": "15px"}),
+             id="dataset-container"),
 
     # Impact Assessment Section
     html.H4("Impact Assessment", style={"margin": "10px 0"}),

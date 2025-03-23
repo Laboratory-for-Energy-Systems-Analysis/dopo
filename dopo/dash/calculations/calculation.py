@@ -20,6 +20,10 @@ def get_databases(project=None):
 def get_methods():
     return list(bw2data.methods)
 
+def get_datasets(database):
+    return [ds for ds in bw2data.Database(database)]
+
+
 def get_classifications_from_database(database: str, classification="ISIC"):
     data = []
 

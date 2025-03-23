@@ -164,7 +164,8 @@ jobs:
           conda build conda/ --output-folder $CONDA_BLD_PATH
 
           echo "Looking for built package..."
-          PKG_PATH=$(find $CONDA_BLD_PATH -type f -name "${PKG_NAME}-*-py_0.tar.bz2" | head -n 1)
+          PKG_PATH=$(find $CONDA_BLD_PATH -type f \( -name "${PKG_NAME}-*.tar.bz2" -o -name "${PKG_NAME}-*.conda" \) | head -n 1)
+
 
           if [ -z "$PKG_PATH" ]; then
             echo "::error ::Package not found! Build may have failed."
