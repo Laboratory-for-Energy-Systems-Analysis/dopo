@@ -55,10 +55,11 @@ def update_databases(selected_project: str) -> List[dict]:
 @app.callback(
     [Output("sectors-container", "style"),
      Output("cpc-container", "style"),
-     Output("isic-container", "style")],
+     Output("isic-container", "style"),
+     Output("dataset-container", "style"),],
     Input("dataset-type-checklist", "value")
 )
-def toggle_dataset_checklists(selected_types: List[str]) -> Tuple[dict, dict, dict]:
+def toggle_dataset_checklists(selected_types: List[str]) -> Tuple[dict, dict, dict, dict]:
     """Show/hide dataset checklist containers based on selected type."""
     def show_if_selected(name: str) -> dict:
         return {"display": "block"} if name in selected_types else {"display": "none"}
@@ -67,6 +68,7 @@ def toggle_dataset_checklists(selected_types: List[str]) -> Tuple[dict, dict, di
         show_if_selected("sectors"),
         show_if_selected("cpc"),
         show_if_selected("isic"),
+        show_if_selected("dataset"),
     )
 
 
@@ -248,7 +250,10 @@ def run_analysis_and_plot(
             result_data[key] = convert_dataframe_to_dict(val)
 
         sector_options = [{"label": s, "value": s} for s in selected_items]
-        default_sector = sector_options[0]["value"] if sector_options else None
+        if search_type == "dataset":
+            default_sector = "selected datasets"
+        else:
+            default_sector = sector_options[0]["value"] if sector_options else None
 
         impact_options = [{"label": m, "value": m} for m in methods]
         default_impact = impact_options[0]["value"] if impact_options else None
@@ -274,6 +279,8 @@ def run_analysis_and_plot(
         )
 
     elif triggered_id in ["dropdown-1", "dropdown-2", "dropdown-3"] and stored_data:
+        if search_type == "dataset":
+            selected_sector = "selected datasets"
         filtered_data = prepare_dataframe(df=stored_data, sector=selected_sector, impact=selected_method)
         fig = scores_plot(df=filtered_data, sector=selected_sector, impact_assessment=selected_method) \
             if selected_plot == "total" else \

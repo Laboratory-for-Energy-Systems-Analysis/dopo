@@ -1,4 +1,4 @@
-from dopo import*
+from dopo import Dopo
 import bw2data
 
 def get_projects():
@@ -35,7 +35,7 @@ def get_classifications_from_database(database: str, classification="ISIC"):
 
     return sorted(list(set(data)))
 
-def analyze(project, databases, impact_assessments, sectors, search_type, exclude_markets=False):
+def analyze(project, databases, impact_assessments, filters, search_type, exclude_markets=False):
     bw2data.projects.set_current(project)
 
     dopo = Dopo()
@@ -48,9 +48,11 @@ def analyze(project, databases, impact_assessments, sectors, search_type, exclud
         dopo.databases.append(database)
 
     if search_type == "sectors":
-        dopo.add_sectors(sectors)
+        dopo.add_sectors(filters)
+    elif search_type == "dataset":
+        dopo.find_datasets_from_names(filters)
     else:
-        dopo.find_activities_from_classification(search_type, sectors)
+        dopo.find_activities_from_classification(search_type, filters)
 
     if exclude_markets is True:
         dopo.exclude_markets()

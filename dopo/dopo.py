@@ -17,6 +17,7 @@ def load_sectors():
 
 SECTORS = load_sectors()
 
+
 class Dopo:
     def __init__(self):
         self._dopo = None
@@ -37,6 +38,14 @@ class Dopo:
 
         self.sectors = sectors
         self.find_activities_from_sector()
+
+    def find_datasets_from_names(self, names):
+        self.activities = defaultdict(list)
+        if len(self.databases) > 0:
+            for db in self.databases:
+                for ds in bd.Database(db):
+                    if ds["name"] in names:
+                        self.activities["selected datasets"].append(ds)
 
     def find_activities_from_sector(self):
         if self.databases is None:
