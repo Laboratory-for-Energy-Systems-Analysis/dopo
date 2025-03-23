@@ -170,12 +170,12 @@ jobs:
           if [ -z "$PKG_PATH" ]; then
             echo "::error ::Package not found! Build may have failed."
             exit 1
+          else
+            echo "Uploading $PKG_PATH to Anaconda..."
+            echo "Contents of build folder:"
+            find $CONDA_BLD_PATH
+            anaconda -t ${{ secrets.ANACONDA_CLOUD }} upload -u $USER "$PKG_PATH" --force
           fi
-
-          echo "Uploading $PKG_PATH to Anaconda..."
-          echo "Contents of build folder:"
-          find $CONDA_BLD_PATH
-          anaconda -t ${{ secrets.ANACONDA_CLOUD }} upload -u $USER "$PKG_PATH" --force
 
   testconda:
     name: (${{ matrix.python-version }}, ${{ matrix.os }})
