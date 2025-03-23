@@ -1,0 +1,13 @@
+electricity (hydro):
+  fltr:
+   name:
+    - electricity production
+    - hydro
+  mask:
+    name:
+    - hydrogen-fired
+    - pumped
+
+
+
+

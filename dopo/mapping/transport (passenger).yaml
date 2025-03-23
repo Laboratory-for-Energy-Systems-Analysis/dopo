@@ -1,0 +1,14 @@
+transport (passenger):
+  fltr:
+    name: transport
+    unit: kilometer
+  mask:
+    name: market
+    unit: ton
+
+
+
+
+
+
+

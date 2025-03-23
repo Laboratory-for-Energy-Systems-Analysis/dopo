@@ -1,0 +1,6 @@
+steel (secondary):
+  fltr:
+    name:
+      - steel
+      - electric
+    reference product: steel

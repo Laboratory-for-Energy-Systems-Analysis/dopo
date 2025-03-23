@@ -1,0 +1,21 @@
+electricity (renewable):
+  fltr:
+    name: electricity production
+  mask:
+    name:
+     - coal
+     - lignite
+     - natural gas
+     - oil
+     - petroleum
+     - hydrogen
+     - nuclear
+     - peat
+     - pumped
+     - industry
+     - compressed
+
+
+
+
+

@@ -5,7 +5,8 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "dopo"
 authors = [
-  { name="caro_friedberger", email="caroline.friedberger@gmail.com" }
+    { name="caro_friedberger", email="caroline.friedberger@gmail.com" },
+    { name="Romain Sacchi", email="romain.sacchi@psi.ch" }
 ]
 maintainers = [
   { name="caro_friedberger", email="caroline.friedberger@gmail.com" },
@@ -29,7 +30,6 @@ classifiers = [
 ]
 requires-python = ">=3.10"
 dependencies = [
-    "premise",
     "pyyaml",
     "peewee",
     "bw2io",
@@ -39,12 +39,14 @@ dependencies = [
     "numpy",
     "matplotlib",
     "seaborn",
+    "scipy",
+    "dash"
 ]
 
 [project.urls]
-source = "https://github.com/polca/dopo"
-homepage = "https://github.com/polca/dopo"
-tracker = "https://github.com/polca/dopo/issues"
+source = "https://github.com/Laboratory-for-Energy-Systems-Analysis/dopo"
+homepage = "https://github.com/Laboratory-for-Energy-Systems-Analysis/dopo"
+tracker = "https://github.com/Laboratory-for-Energy-Systems-Analysis/dopo/issues"
 
 [project.optional-dependencies]
 # Getting recursive dependencies to work is a pain, this
@@ -73,6 +75,7 @@ packages = ["dopo"]
 [tool.setuptools.dynamic]
 version = {attr = "dopo.__version__"}
 
+
 [tool.pytest.ini_options]
 addopts = "--cov dopo --cov-report term-missing --verbose"
 norecursedirs = [
@@ -95,6 +98,10 @@ exclude = [
     ".eggs",
     "docs/conf.py",
 ]
+
+[project.scripts]
+dopo-dash = "dopo.dash.app:main"
+
 
 [tool.black]
 line-length = 88

@@ -5,8 +5,6 @@ Provides functionality to filter and manage LCA methods in Brightway2. The `Meth
 enables users to search for methods based on criteria and manage them efficiently.
 """
 
-import brightway2 as bw
-import bw2analyzer as ba
 import bw2data as bd
 
 class MethodFinder:
@@ -20,10 +18,8 @@ class MethodFinder:
 
     Attributes
     ----------
-    all_methods : dict
-        A dictionary to store method objects and their metadata.
-    method_counter : int
-        A counter to generate unique keys for each method stored in the dictionary.
+    methods : list
+        A list of method objects that match the specified criteria.
 
     Methods
     -------
@@ -31,8 +27,6 @@ class MethodFinder:
         Finds methods based on provided criteria, filters them, and stores the selected method
         in the dictionary with a unique or custom key.
 
-    get_all_methods()
-        Returns the dictionary containing all stored methods.
     """
 
     def __init__(self):
@@ -40,40 +34,33 @@ class MethodFinder:
         Initializes the MethodFinder class with an empty dictionary for storing methods
         and a counter for generating unique method keys.
         """
-        self.all_methods = {}
-        self.method_counter = 0
+        self.methods = []
 
-    def find_and_create_method(self, criteria, exclude=None, custom_key=None):
+    def find_methods(
+            self,
+            criteria: list,
+            exclude: list = None,
+    ) -> None:
         """
-        Finds and filters methods based on the given criteria and optionally excludes methods
-        based on exclusion criteria. The selected method is then stored in a dictionary with
-        a unique or custom key.
+        Finds and filters methods based on the given criteria and optionally
+        excludes methods based on exclusion criteria. The tuple representation
+        of the selected method is then added to `self.methods`.
 
-        Parameters
-        ----------
-        criteria : list of str
-            A list of strings representing the inclusion criteria to filter the methods.
-        exclude : list of str, optional
-            A list of strings representing the exclusion criteria to filter out certain methods 
-            (default is None).
-        custom_key : str, optional
-            A custom key to use for storing the method in the dictionary. If not provided,
-            a unique key is generated automatically (default is None).
+        :param criteria: A list of strings to search for in the method names.
+        :type criteria: list
+        :param exclude: A list of strings to exclude from the method names.
+        :type exclude: list, optional
+        :return: None
 
-        Returns
-        -------
-        dict
-            A dictionary with the method's key and its associated data including the method object,
-            method name, short name, and unit.
-
-        Raises
-        ------
-        ValueError
-            If no methods or multiple methods are found matching the given criteria.
         """
-        methods = bw.methods
+
         # Start with all methods
-        filtered_methods = methods
+        filtered_methods = bd.methods
+
+        # test presence of methods
+        if not filtered_methods:
+            raise ValueError("No methods found in the Brightway2 project.")
+
         # Apply inclusion criteria
         for criterion in criteria:
             filtered_methods = [m for m in filtered_methods if criterion in str(m)]
@@ -86,40 +73,19 @@ class MethodFinder:
         # Check if we found exactly one method
         if len(filtered_methods) == 0:
             raise ValueError("No methods found matching the given criteria.")
-        elif len(filtered_methods) > 1:
-            raise ValueError(
-                f"Multiple methods found: {filtered_methods}. Please provide more specific criteria."
-            )
-        # Get the first (and only) method
-        selected_method = filtered_methods[0]
-        # Create the Brightway Method object
-        method_object = bw.Method(selected_method)
 
-        # Generate a key for storing the method
-        if custom_key is None:
-            self.method_counter += 1
-            key = f"method_{self.method_counter}"
-        else:
-            key = custom_key
+        print(f"Found {len(filtered_methods)} methods matching the criteria.")
 
-        # Store the method object and additional information in the dictionary
-        self.all_methods[key] = {
-            "object": method_object,
-            "method name": method_object.name,
-            "short name": method_object.name[2],
-            "unit": method_object.metadata.get("unit", "Unknown"),
-        }
+        return filtered_methods
 
-        # Return both the method object and its key
-        return {key: self.all_methods[key]}
-
-    def get_all_methods(self):
+    def add_methods(self, methods: list) -> None:
         """
-        Returns the dictionary containing all stored methods.
+        Add a list of method objects to the `self.methods` attribute.
 
-        Returns
-        -------
-        dict
-            A dictionary containing all stored methods with their associated data.
+        :param methods: A list of method objects to add.
+        :type methods: list
+        :return: None
+
         """
-        return self.all_methods
+        self.methods.extend(methods)
+        print(f"Added {len(methods)} methods to the list.")

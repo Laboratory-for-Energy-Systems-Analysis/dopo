@@ -1,0 +1,9 @@
+electricity (PV):
+  fltr:
+   name:
+    - electricity production
+    - photovoltaic
+
+
+
+

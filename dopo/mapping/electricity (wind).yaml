@@ -1,0 +1,9 @@
+electricity (wind):
+  fltr:
+   name:
+    - electricity production
+    - wind
+
+
+
+

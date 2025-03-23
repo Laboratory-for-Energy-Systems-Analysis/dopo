@@ -1,0 +1,17 @@
+fuel (petrol):
+  fltr:
+    name:
+      - petrol
+  mask:
+    location:
+      - RoW
+      - Europe without Switzerland
+    name:
+        - market
+
+
+
+
+
+
+

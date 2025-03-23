@@ -1,0 +1,10 @@
+electricity (nat gas):
+  fltr:
+   name:
+    - electricity production
+    - natural gas
+  mask:
+    name: hydrogen
+
+
+
