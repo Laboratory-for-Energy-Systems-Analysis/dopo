@@ -51,7 +51,6 @@ jobs:
           git commit -am "Black reformating"
           git push
 
-
   build:
     runs-on: ${{ matrix.os }}
     strategy:
