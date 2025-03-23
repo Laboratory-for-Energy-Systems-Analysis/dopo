@@ -1,0 +1,49 @@
+{% set name = "dopo" %}
+{{ environ.get('GIT_DESCRIBE_TAG', '0.1.0') }}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  path: ..
+
+build:
+  noarch: python
+  script: bash conda/build.sh
+
+requirements:
+  build:
+    - python
+    - pip
+  run:
+    - pyyaml
+    - peewee
+    - bw2io
+    - bw2data
+    - bw2analyzer
+    - pandas
+    - numpy
+    - matplotlib
+    - seaborn
+    - scipy
+    - dash
+    - dash-bootstrap-components
+
+test:
+  imports:
+    - dopo
+  commands:
+    - pip check
+    - python -c "import dopo"
+
+about:
+  home: https://github.com/Laboratory-for-Energy-Systems-Analysis/dopo
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  summary: "Detecting Outliers in Premise Operations (dopo) - LCA background analysis toolkit"
+
+extra:
+  recipe-maintainers:
+    - romainsacchi
