@@ -47,16 +47,16 @@ combined with a Dash web application for interactive exploration of datasets and
 
 ## Installation
 
-You can install _dopo_ via [pip] from [PyPI]:
-
-```console
-$ pip install dopo
-```
-
-Or from Anaconda:
+You can install _dopo_ via from Anaconda:
 
 ```console
 $ conda install romainsacchi::dopo
+```
+
+Or via [pip] from [PyPI]:
+
+```console
+$ pip install dopo
 ```
 
 > [!IMPORTANT]
