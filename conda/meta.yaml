@@ -20,8 +20,8 @@ requirements:
     - bw2analyzer
     - bw2calc
     - bw2data
-    - dash_bootstrap_components
-    - dash_daq
+    - dash-bootstrap-components
+    - dash-daq
     - numpy
     - openpyxl
     - pandas

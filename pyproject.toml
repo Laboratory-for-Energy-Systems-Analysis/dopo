@@ -42,7 +42,6 @@ dependencies = [
     "pytest",
     "PyYAML",
     "tabulate",
-
 ]
 
 [project.urls]
