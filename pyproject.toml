@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "dopo"
 authors = [
-  { name="caro_friedberger", email="caroline.friedberger@gmail.com" },
+    { name="caro_friedberger", email="caroline.friedberger@gmail.com" },
     { name="Romain Sacchi", email="romain.sacchi@psi.ch" }
 ]
 maintainers = [

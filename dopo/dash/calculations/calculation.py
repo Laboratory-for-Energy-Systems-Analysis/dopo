@@ -31,7 +31,7 @@ def get_classifications_from_database(database: str, classification="ISIC"):
 
     return sorted(list(set(data)))
 
-def analyze(project, databases, impact_assessments, sectors, search_type):
+def analyze(project, databases, impact_assessments, sectors, search_type, exclude_markets=False):
     bw2data.projects.set_current(project)
 
     dopo = Dopo()
@@ -47,6 +47,9 @@ def analyze(project, databases, impact_assessments, sectors, search_type):
         dopo.add_sectors(sectors)
     else:
         dopo.find_activities_from_classification(search_type, sectors)
+
+    if exclude_markets is True:
+        dopo.exclude_markets()
 
     dopo.analyze()
 

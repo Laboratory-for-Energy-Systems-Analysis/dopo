@@ -1,12 +1,13 @@
-fuel:
+fuel (petrol):
   fltr:
     name:
-      - heavy fuel oil production
-
+      - petrol
   mask:
     location:
       - RoW
       - Europe without Switzerland
+    name:
+        - market
 
 
 

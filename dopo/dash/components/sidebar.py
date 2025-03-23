@@ -19,23 +19,35 @@ sidebar_layout = html.Div([
     dcc.Checklist(
         id="databases-checklist",
         inline=False,
-        style={"overflowY": "auto", "height": "100px", "padding": "5px"}
+        style={"overflowY": "auto", "height": "80px", "padding": "5px"}
     ),
 
     # Dataset Selection
     html.H4("Datasets", style={"margin": "10px 0"}),
-    dcc.Checklist(
-        id="dataset-type-checklist",
-        options=[
-            {"label": "Sectors", "value": "sectors"},
-            {"label": "CPC", "value": "cpc"},
-            {"label": "ISIC", "value": "isic"},
-        ],
-        value=["sectors"],
-        inline=True,
-        style={"padding": "5px"},
-        labelStyle={"marginRight": "15px"}
-    ),
+    html.Div([
+        # Dataset type radio-style checkboxes
+        dcc.Checklist(
+            id="dataset-type-checklist",
+            options=[
+                {"label": "Sectors", "value": "sectors"},
+                {"label": "CPC", "value": "cpc"},
+                {"label": "ISIC", "value": "isic"},
+            ],
+            value=["sectors"],
+            inline=True,
+            labelStyle={"marginRight": "10px"},
+            style={"paddingBottom": "0px", "marginBottom": "0px"}
+        ),
+
+        # Exclude markets checkbox — tightly below
+        dcc.Checklist(
+            id="excl-markets-check",
+            options=[{"label": "excl. markets", "value": "exclude"}],
+            value=[],
+            inline=True,
+            style={"marginTop": "4px", "marginLeft": "2px"}
+        )
+    ]),
     dcc.Input(
         id="dataset-search",
         type="text",
@@ -45,11 +57,11 @@ sidebar_layout = html.Div([
     ),
 
     # Checklist containers
-    html.Div(dcc.Checklist(id="sectors-checklist", style={"overflowY": "auto", "height": "150px", "padding": "15px"}),
+    html.Div(dcc.Checklist(id="sectors-checklist", style={"overflowY": "auto", "height": "100px", "padding": "15px"}),
              id="sectors-container"),
-    html.Div(dcc.Checklist(id="cpc-checklist", style={"overflowY": "auto", "height": "150px", "padding": "15px"}),
+    html.Div(dcc.Checklist(id="cpc-checklist", style={"overflowY": "auto", "height": "100px", "padding": "15px"}),
              id="cpc-container"),
-    html.Div(dcc.Checklist(id="isic-checklist", style={"overflowY": "auto", "height": "150px", "padding": "15px"}),
+    html.Div(dcc.Checklist(id="isic-checklist", style={"overflowY": "auto", "height": "100px", "padding": "15px"}),
              id="isic-container"),
 
     # Impact Assessment Section

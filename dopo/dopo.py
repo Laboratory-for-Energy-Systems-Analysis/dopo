@@ -85,6 +85,11 @@ class Dopo:
         else:
             print("No databases found.")
 
+    def exclude_markets(self):
+        if self.activities:
+            for sector, activities in self.activities.items():
+                self.activities[sector] = [act for act in activities if "market" not in act["name"].lower()]
+
     def analyze(self, cutoff=0.01):
         if self.activities:
             self.results = sector_lca_scores(
