@@ -5,36 +5,45 @@
 [![Python Version](https://img.shields.io/pypi/pyversions/dopo)][pypi status]
 [![License](https://img.shields.io/pypi/l/dopo)][license]
 
-[![Read the documentation at https://dopo.readthedocs.io/](https://img.shields.io/readthedocs/dopo/latest.svg?label=Read%20the%20Docs)][read the docs]
-[![Tests](https://github.com/polca/dopo/actions/workflows/python-test.yml/badge.svg)][tests]
 
 [pypi status]: https://pypi.org/project/dopo/
-[read the docs]: https://dopo.readthedocs.io/
-[tests]: https://github.com/cafriedb/dopo/actions?workflow=Tests
-[codecov]: https://app.codecov.io/gh/cafriedb/dopo
-[pre-commit]: https://github.com/pre-commit/pre-commit
-[black]: https://github.com/psf/black
 
 ## About dopo
-The **Premise Validation Project** introduces the Python package ``dopo`` 
-(**D**etecting **O**utliers in **P**remise **O**perations), an outlier 
-detection framework for ``premise``-based and scenario-based 
-Life Cycle Assessment (LCA) databases.
 
-``dopo`` visualizes and compares LCA datasets by sector and 
-characterization methods, generating three types of plots and 
-detailed tables. It allows quick comparison between the examined 
-database and the original *ecoinvent* database, with results exported 
-to an Excel workbook for easy analysis.
+The **Premise Validation Project** introduces the Python package `dopo`
+(**D**etecting **O**utliers in **P**remise **O**perations), a toolkit 
+for evaluating the consistency of background life cycle inventories and 
+identifying anomalies that could affect LCA results.
 
-The goal of dopo is to streamline outlier detection, enabling users 
-to quickly identify anomalies and understand their impact on LCA results. 
-Additionally, dopo can visualize entire databases or any other 
-databases used in Brightway.
+It is essentially a wrapper around the [Brightway2](https://brightway.dev/) ``bw2analyzer`` library,
+combined with a Dash web application for interactive exploration of datasets and results.
 
-## Documentation
+---
 
-https://dopo.readthedocs.io/en/latest/
+## 🧪 Features
+
+- Detect structural and numerical outliers in ecoinvent-based inventories.
+- Interface with Brightway2 and Premise-modified databases.
+- Filter or classify activities based on CPC, ISIC, or custom sector definitions.
+- Assess differences in environmental impacts from method-to-method or database-to-database.
+
+---
+
+## 📊 Dash Web Application
+
+`dopo` includes a Dash-based interactive app for exploring datasets and visualizing environmental impact scores across projects.
+
+### App Features
+
+- ✅ Load and switch between multiple Brightway projects
+- ✅ Select one or more background databases
+- ✅ Choose a dataset grouping: **Sectors**, **CPC**, or **ISIC**
+- ✅ Filter datasets with a search bar
+- ✅ (Optional) Exclude market activities using a checkbox
+- ✅ Select one or more impact assessment methods
+- ✅ View either total impact scores or contribution plots
+- ✅ Interactive dropdowns to explore results by sector and method
+- ✅ Run calculations and visualize scores in seconds
 
 ## Installation
 
@@ -44,13 +53,17 @@ You can install _dopo_ via [pip] from [PyPI]:
 $ pip install dopo
 ```
 
-## Usage
+### How to run the app
 
-To use the dashboard, go to `dopo/dash`, then
+You can launch the app directly from the terminal using the following command:
 
-```console
-$ python app.py
+```bash
+dopo-dash
 ```
+
+## Documentation
+
+https://dopo.readthedocs.io/en/latest/
 
 
 ## Contributing
