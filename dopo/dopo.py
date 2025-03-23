@@ -72,7 +72,6 @@ class Dopo:
 
         self.activities = defaultdict(list)
 
-        print(f"databases: {self.databases}")
         if len(self.databases) > 0:
             for db in self.databases:
                 for ds in bd.Database(db):

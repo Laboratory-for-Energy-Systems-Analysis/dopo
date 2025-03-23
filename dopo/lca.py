@@ -195,9 +195,6 @@ def compare_activities_by_grouped_leaves(
         * ``pandas``: a pandas ``DataFrame``.
 
     """
-    for act in activities:
-        if not isinstance(act, bd.backends.proxies.Activity):
-            raise ValueError("`activities` must be an iterable of `Activity` instances")
 
     lca = bc.LCA({act: 1 for act in activities}, lcia_method)
     lca.lci(factorize=True)
@@ -246,7 +243,10 @@ def compare_activities_by_grouped_leaves(
     ] + [key for _, key in sorted_keys]
     data = []
     for act, lst in zip(activities, objs):
-        lca.lcia({act.id: 1})
+        try:
+            lca.lcia({act.id: 1})
+        except AttributeError:
+            lca.redo_lcia({act: 1})
         data.append(
             [
                 act["name"],
@@ -317,7 +317,10 @@ def find_leaves(
             cache[k] = lca_obj.score
     else:
         if k not in cache:
-            lca_obj.lcia({activity.id: amount})
+            try:
+                lca_obj.lcia({activity.id: amount})
+            except AttributeError:
+                lca_obj.redo_lcia({activity: amount})
             if k not in activities_to_exclude_from_cache:
                 cache[k] = lca_obj.score
             sub_score = lca_obj.score
