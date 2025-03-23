@@ -150,7 +150,7 @@ jobs:
         run: conda info
 
       - name: Publish distribution 📦 to Anaconda if Push and if master branch
-        if: startsWith(github.ref, 'refs/heads/master')
+        if: startsWith(github.ref, 'refs/heads/main')
         shell: bash -l {0}
 
         run: |
