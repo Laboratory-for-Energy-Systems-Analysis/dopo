@@ -59,6 +59,10 @@ Or from Anaconda:
 $ conda install romainsacchi::dopo
 ```
 
+> [!IMPORTANT]
+> For Mac users with an ARM chip, you need to have `scikit-umfpack` 
+> as well as `numpy<=1.24.4`, otherwise it results in slow calculations.
+
 ### How to run the app
 
 You can launch the app directly from the terminal using the following command:
