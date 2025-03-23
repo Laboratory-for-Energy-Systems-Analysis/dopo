@@ -4,7 +4,9 @@ electricity (hydro):
     - electricity production
     - hydro
   mask:
-    name: hydrogen-fired
+    name:
+    - hydrogen-fired
+    - pumped
 
 
 

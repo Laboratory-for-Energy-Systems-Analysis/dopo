@@ -1,14 +1,15 @@
 # app.py
-from dash import Dash, html, dcc, callback_context, no_update
+from dash import Dash, html, dcc, callback_context, no_update, ctx
 from .components.sidebar import sidebar_layout
 from .components.main_content import main_content_layout
 from dash import Output, Input, State
-from .calculations.calculation import get_projects, get_methods, get_databases, activate_project, analyze
+from .calculations.calculation import get_projects, get_methods, get_databases, activate_project, analyze, get_classifications_from_database
 from dopo.dopo import SECTORS
 import plotly.graph_objects as go
 from .utils.conversion import convert_dataframe_to_dict
 from .plot.plot import contribution_plot, prepare_dataframe, scores_plot
 import dash_bootstrap_components as dbc
+
 
 app = Dash(__name__, external_stylesheets=[dbc.themes.YETI, dbc.icons.FONT_AWESOME])
 
@@ -58,17 +59,86 @@ def update_databases(selected_project):
         [{"label": db[:30], "value": db} for db in databases],
     )
 
-# Callback to populate Sectors checklist on page load
-@app.callback(
-    Output("sectors-checklist", "options"),
-    Input("initial-load", "n_intervals")  # Triggered by interval on page load
-)
-def populate_sectors_list(n_intervals):
-    # Return the predefined sectors list for the checklist
-    if n_intervals == 0:
-        return []
-    return [{"label": sector, "value": sector} for sector in sorted(SECTORS)]
 
+@app.callback(
+    [Output("sectors-container", "style"),
+     Output("cpc-container", "style"),
+     Output("isic-container", "style")],
+    Input("dataset-type-checklist", "value")
+)
+def toggle_dataset_checklists(selected_types):
+    def show_if_selected(name):
+        return {"display": "block"} if name in selected_types else {"display": "none"}
+
+    return (
+        show_if_selected("sectors"),
+        show_if_selected("cpc"),
+        show_if_selected("isic"),
+    )
+
+@app.callback(
+    [Output("sectors-checklist", "options"),
+     Output("cpc-checklist", "options"),
+     Output("isic-checklist", "options")],
+    [Input("dataset-type-checklist", "value"),
+     Input("databases-checklist", "value"),
+     Input("dataset-search", "value")],
+    prevent_initial_call=True
+)
+def update_filtered_dataset_options(selected_types, selected_databases, search_term):
+    if not selected_databases or not isinstance(selected_databases, list):
+        return [], [], []
+
+    selected_db = selected_databases[0]
+    search_term = (search_term or "").lower()
+
+    # Filter helper
+    def filter_items(items):
+        return [item for item in items if search_term in item.lower()]
+
+    sectors_options, cpc_options, isic_options = [], [], []
+
+    if "sectors" in selected_types:
+        all_sectors = sorted(SECTORS)
+        filtered = filter_items(all_sectors)
+        sectors_options = [{"label": s, "value": s} for s in filtered]
+
+    if "cpc" in selected_types:
+        cpc_data = get_classifications_from_database(selected_db, "cpc")
+        filtered = filter_items(cpc_data)
+        cpc_options = [{"label": item, "value": item} for item in filtered]
+
+    if "isic" in selected_types:
+        isic_data = get_classifications_from_database(selected_db, "isic")
+        filtered = filter_items(isic_data)
+        isic_options = [{"label": item, "value": item} for item in filtered]
+
+    return sectors_options, cpc_options, isic_options
+
+@app.callback(
+    Output("dataset-type-checklist", "value"),
+    Input("dataset-type-checklist", "value"),
+    prevent_initial_call=True
+)
+def enforce_single_dataset_selection(current_selection):
+    # Determine which item was most recently clicked
+    triggered = ctx.triggered_id
+
+    if not current_selection:
+        return []
+
+    # Enforce single selection: only keep the last clicked value
+    last_selected = current_selection[-1]
+
+    return [last_selected]
+
+@app.callback(
+    Output("dataset-search", "value"),
+    Input("dataset-type-checklist", "value"),
+    prevent_initial_call=True
+)
+def clear_search_on_dataset_change(dataset_type):
+    return ""
 
 # Combined callback for updating Impact Assessment list based on project selection and search term
 @app.callback(
@@ -110,40 +180,75 @@ def update_impact_assessment_list(search_term, selected_project):
      Output("dropdown-2", "options"),
      Output("dropdown-2", "value"),
      Output("dropdown-3", "options"),
-     Output("dropdown-3", "value")],
+     Output("dropdown-3", "value"),
+     Output("loading-placeholder", "children")],  # ← new dummy output
     [Input("calc-button", "n_clicks"),
      Input("dropdown-1", "value"),      # Sector dropdown as input
      Input("dropdown-2", "value"),
      Input("dropdown-3", "value"),
      ],     # Impact assessment dropdown as input
-    [State("projects-radioitems", "value"),
-     State("databases-checklist", "value"),
-     State("sectors-checklist", "value"),
-     State("impact-assessment-checklist", "value"),
-     State("analyze-data-store", "data")]
+    [
+        State("projects-radioitems", "value"),
+        State("databases-checklist", "value"),
+        State("sectors-checklist", "value"),  # Still keep this
+        State("cpc-checklist", "value"),  # Add this
+        State("isic-checklist", "value"),  # And this
+        State("impact-assessment-checklist", "value"),
+        State("analyze-data-store", "data"),
+        State("dataset-type-checklist", "value"),
+    ]
 )
 
-def run_analysis_and_plot(n_clicks, selected_sector, selected_method, selected_plot, project, databases, sectors, methods, stored_data):
+def run_analysis_and_plot(n_clicks, selected_sector, selected_method, selected_plot,
+                          project, databases, sectors, cpc, isic,
+                          methods, stored_data, search_type):
     # Determine which input triggered the callback
     triggered_id = callback_context.triggered[0]["prop_id"].split(".")[0]
 
     # Case 1: Run Calculation button is clicked
     if triggered_id == "calc-button" and n_clicks > 0:
-        print(
-            f"Running analysis with project: {project}, databases: {databases}, impact assessments: {methods}, sectors: {sectors}")
+
+        # extract the selected search_type ("sector", "cpc", or "isic")
+        if isinstance(search_type, list) and search_type:
+            search_type = search_type[0]
+        else:
+            search_type = "sectors"
+
+        # Dynamically select dataset values based on search_type
+        if search_type == "cpc":
+            selected_items = cpc
+        elif search_type == "isic":
+            selected_items = isic
+        else:
+            selected_items = sectors
+
+        selected_items = [item.strip() for item in selected_items]
+
+        if not databases:
+            message = "Please select at least one database."
+        elif not methods:
+            message = "Please select at least one impact assessment method."
+        elif not selected_items:
+            message = f"Please select at least one {search_type.upper()} entry."
+        else:
+            message = None
+
+        if message:
+            return None, go.Figure(), [], None, [], None, [], None, html.Div(message, style={"color": "red"})
 
         # Ensure there is at least one database, impact assessment, and sector selected
-        if not databases or not methods or not sectors:
-            return None, go.Figure(), [], None, [], None, [], None
+        if not databases or not methods or not selected_items:
+            return None, go.Figure(), [], None, [], None, [], None, dbc.Button("Run Calculation", id="calc-button",
+                                                                          n_clicks=n_clicks)
 
         # Call analyze() with the selected values to get data for plotting
-        result_data = analyze(project, databases, methods, sectors)
+        result_data = analyze(project, databases, methods, selected_items, search_type=search_type)
 
         for key, val in result_data.items():
             result_data[key] = convert_dataframe_to_dict(val)
 
         # Populate dropdown options for sectors and set the default value
-        sector_options = [{"label": sector, "value": sector} for sector in sectors]
+        sector_options = [{"label": s, "value": s} for s in selected_items]
         default_sector = sector_options[0]["value"] if sector_options else None
 
         # Populate dropdown options for impact assessments and set the default value
@@ -161,6 +266,7 @@ def run_analysis_and_plot(n_clicks, selected_sector, selected_method, selected_p
             impact=default_impact
         )
 
+
         # check the plot type
         if default_plot == "total":
             fig = scores_plot(
@@ -176,7 +282,7 @@ def run_analysis_and_plot(n_clicks, selected_sector, selected_method, selected_p
             )
 
         # Store result data in `dcc.Store` and return updated plot and dropdowns
-        return result_data, fig, sector_options, default_sector, impact_options, default_impact, plot_options, default_plot
+        return result_data, fig, sector_options, default_sector, impact_options, default_impact, plot_options, default_plot, dbc.Button("Run Calculation", id="calc-button", n_clicks=n_clicks)
 
     # Case 2: Update plot based on selected sector or impact assessment without re-running analyze()
     elif triggered_id in ["dropdown-1", "dropdown-2", "dropdown-3"] and stored_data:
@@ -200,10 +306,10 @@ def run_analysis_and_plot(n_clicks, selected_sector, selected_method, selected_p
                 impact_assessment=selected_method
             )
 
-        return stored_data, fig, no_update, no_update, no_update, no_update, no_update, no_update
+        return stored_data, fig, no_update, no_update, no_update, no_update, no_update, no_update, no_update
 
     # Default return if no specific case is triggered
-    return no_update, go.Figure(), no_update, no_update, no_update, no_update, no_update, no_update
+    return no_update, go.Figure(), no_update, no_update, no_update, no_update, no_update, no_update, no_update
 
 def main():
     app.run(debug=True)

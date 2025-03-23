@@ -20,8 +20,18 @@ def get_databases(project=None):
 def get_methods():
     return list(bw2data.methods)
 
+def get_classifications_from_database(database: str, classification="ISIC"):
+    data = []
 
-def analyze(project, databases, impact_assessments, sectors):
+    for ds in bw2data.Database(database):
+        if "classifications" in ds:
+            for c in ds["classifications"]:
+                if classification in c[0].lower():
+                    data.append(c[1].split(":")[-1])
+
+    return sorted(list(set(data)))
+
+def analyze(project, databases, impact_assessments, sectors, search_type):
     bw2data.projects.set_current(project)
 
     dopo = Dopo()
@@ -33,7 +43,10 @@ def analyze(project, databases, impact_assessments, sectors):
     for database in databases:
         dopo.databases.append(database)
 
-    dopo.add_sectors(sectors)
+    if search_type == "sectors":
+        dopo.add_sectors(sectors)
+    else:
+        dopo.find_activities_from_classification(search_type, sectors)
 
     dopo.analyze()
 

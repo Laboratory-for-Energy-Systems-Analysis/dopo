@@ -1,9 +1,10 @@
 transport (passenger):
   fltr:
     name: transport
-    unit: person kilometer
+    unit: kilometer
   mask:
     name: market
+    unit: ton
 
 
 

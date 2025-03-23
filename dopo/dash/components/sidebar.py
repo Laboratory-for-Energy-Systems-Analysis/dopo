@@ -1,5 +1,6 @@
 # sidebar.py
 from dash import html, dcc
+import dash_bootstrap_components as dbc
 
 sidebar_layout = html.Div([
     # Projects Section
@@ -21,13 +22,35 @@ sidebar_layout = html.Div([
         style={"overflowY": "auto", "height": "100px", "padding": "5px"}
     ),
 
-    # Sectors selection
-    html.H4("Sectors", style={"margin": "10px 0"}),
+    # Dataset Selection
+    html.H4("Datasets", style={"margin": "10px 0"}),
     dcc.Checklist(
-        id="sectors-checklist",
-        inline=False,
-        style={"overflowY": "auto", "height": "150px", "padding": "5px"}
+        id="dataset-type-checklist",
+        options=[
+            {"label": "Sectors", "value": "sectors"},
+            {"label": "CPC", "value": "cpc"},
+            {"label": "ISIC", "value": "isic"},
+        ],
+        value=["sectors"],
+        inline=True,
+        style={"padding": "5px"},
+        labelStyle={"marginRight": "15px"}
     ),
+    dcc.Input(
+        id="dataset-search",
+        type="text",
+        placeholder="Search",
+        debounce=True,
+        style={"marginBottom": "10px", "width": "100%"}
+    ),
+
+    # Checklist containers
+    html.Div(dcc.Checklist(id="sectors-checklist", style={"overflowY": "auto", "height": "150px", "padding": "15px"}),
+             id="sectors-container"),
+    html.Div(dcc.Checklist(id="cpc-checklist", style={"overflowY": "auto", "height": "150px", "padding": "15px"}),
+             id="cpc-container"),
+    html.Div(dcc.Checklist(id="isic-checklist", style={"overflowY": "auto", "height": "150px", "padding": "15px"}),
+             id="isic-container"),
 
     # Impact Assessment Section
     html.H4("Impact Assessment", style={"margin": "10px 0"}),
@@ -39,8 +62,15 @@ sidebar_layout = html.Div([
     ),
 
     # Bottom Section with Calculation Button
+
     html.Div([
-        html.Button("Run Calculation", id="calc-button", n_clicks=0),
+        dcc.Loading(
+            id="loading-calc",
+            type="circle",
+            children=html.Div(id="loading-placeholder", children=[
+                dbc.Button("Run Calculation", id="calc-button", n_clicks=0)
+            ])
+        )
     ], style={"padding": "10px", "border": "1px solid #0099CC", "textAlign": "center"})
 
 ], style={"width": "20%", "height": "100vh", "display": "inline-block", "verticalAlign": "top", "padding": "10px"})

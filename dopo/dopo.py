@@ -1,6 +1,7 @@
 """
 
 """
+from collections import defaultdict
 import bw2data as bd
 from pathlib import Path
 
@@ -35,9 +36,9 @@ class Dopo:
             raise ValueError("Invalid sector name." f"Valid sectors are: {SECTORS}")
 
         self.sectors = sectors
-        self.find_activities()
+        self.find_activities_from_sector()
 
-    def find_activities(self):
+    def find_activities_from_sector(self):
         if self.databases is None:
             print("No databases found.")
             return
@@ -61,7 +62,26 @@ class Dopo:
                             _get_mapping(Path(MAPPING_DIR) / f"{sector}.yaml"),
                             bd.Database(db),
                         )[sector]
+        else:
+            print("No databases found.")
 
+    def find_activities_from_classification(self, classification_type: str, classifications: list):
+        if self.databases is None:
+            print("No databases found.")
+            return
+
+        self.activities = defaultdict(list)
+
+        print(f"databases: {self.databases}")
+        if len(self.databases) > 0:
+            for db in self.databases:
+                for ds in bd.Database(db):
+                    if "classifications" in ds:
+                        for c in ds["classifications"]:
+                            if classification_type in c[0].lower():
+                                for classification in classifications:
+                                    if classification.lower() in c[1].split(":")[-1].lower():
+                                        self.activities[classification].append(ds)
         else:
             print("No databases found.")
 

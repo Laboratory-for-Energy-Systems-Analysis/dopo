@@ -45,6 +45,8 @@ def sector_lca_scores(sectors, methods, cutoff=0.01) -> dict:
             cache=cache
         )
 
+        scores.to_excel(f"lca_scores_{sector}.xlsx")
+
         # turn lca_scores into a long tables
         scores = scores.melt(
             id_vars=['activity', 'product', 'database', 'location', 'unit', 'method', 'method unit',],
@@ -205,6 +207,11 @@ def compare_activities_by_grouped_leaves(
 
     objs = []
 
+    activities_to_exclude_from_cache = [
+        (lcia_method, a["database"], a["code"])
+        for a in activities
+    ]
+
     for act in activities:
         leaves, cache = find_leaves(
                 activity=act,
@@ -212,7 +219,8 @@ def compare_activities_by_grouped_leaves(
                 max_level=max_level,
                 cutoff=cutoff,
                 lca_obj=lca,
-                cache=cache
+                cache=cache,
+                activities_to_exclude_from_cache=activities_to_exclude_from_cache
             )
 
         grouped_leaves = group_leaves(leaves)
@@ -289,7 +297,8 @@ def find_leaves(
     level=0,
     max_level=3,
     cutoff=2.5e-2,
-    cache=None
+    cache=None,
+    activities_to_exclude_from_cache=None
 ):
     """Traverse the supply chain of an activity to find leaves - places where the impact of that
     component falls below a threshold value.
@@ -306,11 +315,13 @@ def find_leaves(
         results = []
 
         total_score = lca_obj.score
-        cache[k] = lca_obj.score
+        if k not in activities_to_exclude_from_cache:
+            cache[k] = lca_obj.score
     else:
         if k not in cache:
             lca_obj.lcia({activity.id: amount})
-            cache[k] = lca_obj.score
+            if k not in activities_to_exclude_from_cache:
+                cache[k] = lca_obj.score
             sub_score = lca_obj.score
         else:
             sub_score = cache[k]
@@ -345,7 +356,8 @@ def find_leaves(
             level=level + 1,
             max_level=max_level,
             cutoff=cutoff,
-            cache=cache
+            cache=cache,
+            activities_to_exclude_from_cache=activities_to_exclude_from_cache
         )
 
     return sorted(results, reverse=True), cache
