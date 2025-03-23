@@ -45,8 +45,6 @@ def sector_lca_scores(sectors, methods, cutoff=0.01) -> dict:
             cache=cache
         )
 
-        scores.to_excel(f"lca_scores_{sector}.xlsx")
-
         # turn lca_scores into a long tables
         scores = scores.melt(
             id_vars=['activity', 'product', 'database', 'location', 'unit', 'method', 'method unit',],
