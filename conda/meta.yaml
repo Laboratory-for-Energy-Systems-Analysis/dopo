@@ -17,18 +17,19 @@ requirements:
     - python
     - pip
   run:
-    - pyyaml
-    - peewee
-    - bw2io
-    - bw2data
     - bw2analyzer
-    - pandas
+    - bw2calc
+    - bw2data
+    - dash_bootstrap_components
+    - dash_daq
     - numpy
-    - matplotlib
-    - seaborn
-    - scipy
-    - dash
-    - dash-bootstrap-components
+    - openpyxl
+    - pandas
+    - plotly
+    - pytest
+    - PyYAML
+    - tabulate
+
 
 test:
   imports:
