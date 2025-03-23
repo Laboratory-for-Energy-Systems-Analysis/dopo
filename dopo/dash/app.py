@@ -135,10 +135,16 @@ def clear_search_on_dataset_change(_: List[str]) -> str:
     [Input("impact-search", "value"),
      Input("projects-radioitems", "value")]
 )
-def update_impact_assessment_list(search_term: str, selected_project: str) -> List[dict]:
+def update_impact_assessment_list(
+    search_term: str,
+    selected_project: str,
+    triggered_id: str = None
+) -> List[dict]:
     """Update the impact assessment list based on search and selected project."""
-    trigger = callback_context.triggered[0]["prop_id"].split(".")[0]
-
+    trigger = (
+        triggered_id or
+        callback_context.triggered[0]["prop_id"].split(".")[0]
+    )
     if not selected_project:
         return []
 
