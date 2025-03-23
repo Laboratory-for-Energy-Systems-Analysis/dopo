@@ -10,7 +10,6 @@ source:
 
 build:
   noarch: python
-  script: bash conda/build.sh
 
 requirements:
   build:
