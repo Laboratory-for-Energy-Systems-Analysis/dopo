@@ -152,17 +152,28 @@ jobs:
         shell: bash -l {0}
 
         run: |
+          set -e
           PKG_NAME=dopo
           USER=romainsacchi
-          conda install anaconda-client
-          conda install conda-build
+          conda install -y anaconda-client conda-build
           mkdir -p ~/conda-bld
-          conda config --set anaconda_upload no
           export CONDA_BLD_PATH=~/conda-bld
-          conda build conda/ --old-build-string
-          ls $CONDA_BLD_PATH/noarch/
-          PKG_PATH=$(find $CONDA_BLD_PATH/noarch -name "$PKG_NAME-*-py_0.tar.bz2" | head -n 1)
-          echo "Uploading: $PKG_PATH"
+          conda config --set anaconda_upload no
+
+          echo "Building package..."
+          conda build conda/ --output-folder $CONDA_BLD_PATH
+
+          echo "Looking for built package..."
+          PKG_PATH=$(find $CONDA_BLD_PATH -type f -name "${PKG_NAME}-*-py_0.tar.bz2" | head -n 1)
+
+          if [ -z "$PKG_PATH" ]; then
+            echo "::error ::Package not found! Build may have failed."
+            exit 1
+          fi
+
+          echo "Uploading $PKG_PATH to Anaconda..."
+          echo "Contents of build folder:"
+          find $CONDA_BLD_PATH
           anaconda -t ${{ secrets.ANACONDA_CLOUD }} upload -u $USER "$PKG_PATH" --force
 
   testconda:
