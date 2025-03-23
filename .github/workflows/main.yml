@@ -174,7 +174,7 @@ jobs:
             echo "Uploading $PKG_PATH to Anaconda..."
             echo "Contents of build folder:"
             find $CONDA_BLD_PATH
-            anaconda upload --token ${{ secrets.ANACONDA_CLOUD }} --user romainsacchi "$PKG_PATH" --force
+            anaconda -t "${{ secrets.ANACONDA_CLOUD }}" upload "$PKG_PATH" --force
 
           fi
 
