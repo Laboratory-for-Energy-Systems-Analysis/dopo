@@ -14,6 +14,8 @@ on:
       - "**.bib"
       - "LICENSE"
       - ".gitignore"
+  release:
+    types: [ published ]
   workflow_dispatch: # also allow manual trigger, for testing purposes
 
 jobs:

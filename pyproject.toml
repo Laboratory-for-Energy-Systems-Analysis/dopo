@@ -5,11 +5,11 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "dopo"
 authors = [
-    { name="caro_friedberger", email="caroline.friedberger@gmail.com" },
+    { name="Caro Friedberger", email="caroline.friedberger@gmail.com" },
     { name="Romain Sacchi", email="romain.sacchi@psi.ch" }
 ]
 maintainers = [
-  { name="caro_friedberger", email="caroline.friedberger@gmail.com" },
+  { name="Caro Friedberger", email="caroline.friedberger@gmail.com" },
   { name="Romain Sacchi", email="romain.sacchi@psi.ch" }
 ]
 description = "A framework for Detecting Outliers in Premise LCA Operations (DOPO)"
