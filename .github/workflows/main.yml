@@ -79,6 +79,7 @@ jobs:
           pip install bw2data
           pip install bw2calc
           pip install bw2io
+          pip install bw2analyzer
 
       - name: Test with pytest
         run: |
