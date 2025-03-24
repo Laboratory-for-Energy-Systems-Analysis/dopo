@@ -47,6 +47,9 @@ combined with a Dash web application for interactive exploration of datasets and
 
 ## Installation
 
+> [!IMPORTANT]
+> You need to install ``dopo`` in a Python environment with `brightway` (2 or 2.5).
+
 You can install _dopo_ via from Anaconda:
 
 ```console
@@ -62,6 +65,7 @@ $ pip install dopo
 > [!IMPORTANT]
 > For Mac users with an ARM chip, you need to have `scikit-umfpack` 
 > as well as `numpy<=1.24.4`, otherwise it results in slow calculations.
+> This is not specific to `dopo` but to `brightway` in general.
 
 ### How to run the app
 

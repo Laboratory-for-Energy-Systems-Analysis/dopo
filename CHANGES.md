@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.0] - 2022-03-22
+## [0.0.1] - 2022-03-22
 
-## [0.2.0] - 2025-03-22
+## [0.0.2] - 2025-03-22
 Added Dash app for visualizing and comparing LCA datasets by sector and characterization methods.
 
 ### Added
