@@ -17,19 +17,15 @@ requirements:
     - python
     - pip
   run:
-    - bw2analyzer
-    - bw2calc
-    - bw2data
     - dash-bootstrap-components
     - dash-daq
-    - numpy
+    - numpy<2.0.0
     - openpyxl
     - pandas
     - plotly
     - pytest
     - PyYAML
     - tabulate
-    - scipy==1.14.1
 
 
 test:

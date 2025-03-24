@@ -30,19 +30,15 @@ classifiers = [
 ]
 requires-python = ">=3.10"
 dependencies = [
-    "bw2analyzer",
-    "bw2calc",
-    "bw2data",
     "dash_bootstrap_components",
     "dash_daq",
-    "numpy",
+    "numpy<2.0.0",
     "openpyxl",
     "pandas",
     "plotly",
     "pytest",
     "PyYAML",
     "tabulate",
-    "scipy==1.14.1"
 ]
 
 [project.urls]
