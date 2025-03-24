@@ -31,6 +31,11 @@ requirements:
 test:
   imports:
     - dopo
+  requires:
+    - bw2data
+    - bw2calc
+    - bw2io
+    - bw2analyzer
   commands:
     - python -c "import dopo"
 
