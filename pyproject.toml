@@ -68,11 +68,13 @@ dev = [
 [tool.setuptools]
 license-files = ["LICENSE"]
 include-package-data = true
-packages = ["dopo"]
 
 [tool.setuptools.dynamic]
 version = {attr = "dopo.__version__"}
 
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["dopo*"]
 
 [tool.pytest.ini_options]
 addopts = "--cov dopo --cov-report term-missing --verbose"

@@ -1,1 +1,1 @@
-include dopo/mapping/*.yaml
+recursive-include dopo *
