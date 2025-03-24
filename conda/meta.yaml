@@ -11,6 +11,7 @@ source:
 build:
   noarch: python
   ignore_prefix_files: true
+  script: bash build.sh
 
 requirements:
   build:
@@ -38,6 +39,7 @@ test:
     - bw2analyzer
   commands:
     - python -c "import dopo"
+    - dopo-dash --help
 
 about:
   home: https://github.com/Laboratory-for-Energy-Systems-Analysis/dopo
