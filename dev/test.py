@@ -12,7 +12,6 @@ dopo.databases = ["ecoinvent-3.10-cutoff",]
 
 dopo.add_sectors(["steel"])
 
-print(dopo.activities)
 
 dopo.analyze()
 

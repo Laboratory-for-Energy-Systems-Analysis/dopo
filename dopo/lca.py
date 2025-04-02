@@ -59,6 +59,8 @@ def sector_lca_scores(sectors, methods, cutoff=0.01) -> dict:
 
         # Apply cutoff to summarize small inputs in an "other" column
         scores = _agg_small_inputs(scores, cutoff)
+
+        scores.to_excel("lca_scores.xlsx")
         
         # Save the LCA scores to the scores_dict
         results[sector] = scores
@@ -201,7 +203,13 @@ def compare_activities_by_grouped_leaves(
 
     """
 
-    lca = bc.LCA({act: 1 for act in activities}, lcia_method)
+    fus = {}
+
+    for act in activities:
+        for e in act.production():
+            fus[act] = e["amount"]
+
+    lca = bc.LCA(fus, lcia_method)
     lca.lci(factorize=True)
     lca.lcia()
 
@@ -246,12 +254,18 @@ def compare_activities_by_grouped_leaves(
         "total",
         "Direct emissions",
     ] + [key for _, key in sorted_keys]
+
     data = []
     for act, lst in zip(activities, objs):
+
+        amount = 1
+        for e in act.production():
+            amount = e["amount"]
+
         if bc_version >= (2, 0, 0):
-            lca.lcia({act.id: 1})
+            lca.lcia({act.id: amount})
         else:
-            lca.redo_lcia({act: 1})
+            lca.redo_lcia({act: amount})
         data.append(
             [
                 act["name"],
@@ -266,6 +280,7 @@ def compare_activities_by_grouped_leaves(
                     lca.characterization_matrix
                     * lca.biosphere_matrix
                     * lca.demand_array
+                    * amount
                 ).sum()
             ]
             + [get_value_for_cpc(lst, key) for _, key in sorted_keys]
